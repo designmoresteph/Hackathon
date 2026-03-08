@@ -1,93 +1,27 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { useState, useEffect } from "react";
+import { motion } from "motion/react";
 import { useNavigate } from "react-router";
-import { Calendar, Mic, FileText, Coffee, Sparkles, TrendingUp, Lightbulb, Search, Loader2 } from "lucide-react";
+import { Calendar, Mic, FileText, Coffee, Sparkles, TrendingUp, Lightbulb, Search } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
+import { getLatestPipelineResult } from '../lib/pipelineStorage';
+import type { PipelineResult } from '../lib/types';
 
-interface WidgetState {
-  isProcessing: boolean;
-  input: string;
-  response: string;
-  showResponse: boolean;
-}
+const priorityColors: Record<string, { bg: string; text: string }> = {
+  high: { bg: '#F5C4A1', text: '#7A3A1A' },
+  medium: { bg: '#F5E6A1', text: '#6B5A1A' },
+  low: { bg: '#C8D5B0', text: '#2A3D1A' },
+};
 
 export function DashboardScreen() {
   const navigate = useNavigate();
 
-  // State for each AI widget
-  const [insightWidget, setInsightWidget] = useState<WidgetState>({
-    isProcessing: false,
-    input: "",
-    response: "",
-    showResponse: false,
-  });
+  const [latestResult, setLatestResult] = useState<PipelineResult | null>(null);
 
-  const [patternWidget, setPatternWidget] = useState<WidgetState>({
-    isProcessing: false,
-    input: "",
-    response: "",
-    showResponse: false,
-  });
-
-  const [actionWidget, setActionWidget] = useState<WidgetState>({
-    isProcessing: false,
-    input: "",
-    response: "",
-    showResponse: false,
-  });
-
-  const handleSearch = (query: string) => {
-    if (query.toLowerCase().includes("blog")) {
-      navigate("/search");
-    }
-  };
-
-  const handleInsightQuery = () => {
-    setInsightWidget({ ...insightWidget, isProcessing: true, showResponse: false });
-    
-    // Simulate AI processing
-    setTimeout(() => {
-      setInsightWidget({
-        ...insightWidget,
-        isProcessing: false,
-        showResponse: true,
-        response: "Based on your recent thoughts, there's a strong connection between your morning routine and creative output. You've mentioned 'morning walks' and 'blog writing' together 8 times this week. Consider dedicating mornings exclusively to creative work.",
-        input: "",
-      });
-    }, 2500);
-  };
-
-  const handlePatternQuery = () => {
-    setPatternWidget({ ...patternWidget, isProcessing: true, showResponse: false });
-    
-    // Simulate AI processing
-    setTimeout(() => {
-      setPatternWidget({
-        ...patternWidget,
-        isProcessing: false,
-        showResponse: true,
-        response: "I've detected a recurring pattern: You feel most creative on weekends but struggle with deadlines during weekdays. Your 'side hustle' ideas spike on Saturday mornings (5 mentions). Your 'creative block' correlates with high work stress (73% correlation).",
-        input: "",
-      });
-    }, 3000);
-  };
-
-  const handleActionQuery = () => {
-    setActionWidget({ ...actionWidget, isProcessing: true, showResponse: false });
-    
-    // Simulate AI processing
-    setTimeout(() => {
-      setActionWidget({
-        ...actionWidget,
-        isProcessing: false,
-        showResponse: true,
-        response: "Here are your AI-generated action items: 1) Block 7-9 AM daily for blog writing (based on your peak energy patterns), 2) Schedule 30-min weekend review for side hustle ideas, 3) Set up a stress-tracking ritual during your afternoon walks.",
-        input: "",
-      });
-    }, 2800);
-  };
+  useEffect(() => {
+    setLatestResult(getLatestPipelineResult());
+  }, []);
 
   return (
     <div className="min-h-screen p-8" style={{ backgroundColor: '#F7F5F0' }}>
@@ -101,7 +35,7 @@ export function DashboardScreen() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="font-['Playfair_Display'] text-5xl tracking-[-0.02em] mb-3" style={{ color: '#0D0D0D' }}>
-                Good morning ✨
+                Good morning
               </h1>
               <p className="font-['DM_Sans'] font-light" style={{ color: '#6B6B6B' }}>
                 Your AI workspace is ready
@@ -109,12 +43,7 @@ export function DashboardScreen() {
             </div>
             <div className="w-80">
               <Input
-                placeholder="Search your thoughts... (try 'blog')"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    handleSearch(e.currentTarget.value);
-                  }
-                }}
+                placeholder="Search your thoughts..."
                 className="rounded-full font-['DM_Sans'] font-light"
                 style={{
                   backgroundColor: '#FFFFFF',
@@ -130,7 +59,7 @@ export function DashboardScreen() {
             <h2 className="font-['Lora'] text-2xl tracking-[-0.01em]" style={{ color: '#0D0D0D' }}>
               AI Agents
             </h2>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Insight Discovery Widget */}
               <motion.div
@@ -146,88 +75,43 @@ export function DashboardScreen() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
-                    <p className="text-xs font-['DM_Sans'] font-light" style={{ color: '#0D0D0D' }}>
-                      Ask me to find hidden connections in your thoughts
-                    </p>
-                    
-                    <div className="flex gap-2">
-                      <Input
-                        placeholder="e.g., What patterns do you see?"
-                        value={insightWidget.input}
-                        onChange={(e) => setInsightWidget({ ...insightWidget, input: e.target.value })}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter" && insightWidget.input) {
-                            handleInsightQuery();
-                          }
-                        }}
-                        disabled={insightWidget.isProcessing}
-                        className="rounded-full font-['DM_Sans'] font-light text-xs"
-                        style={{
-                          backgroundColor: '#FFFFFF',
-                          borderColor: '#E8E5E0',
-                          color: '#0D0D0D',
-                        }}
-                      />
-                      <Button
-                        size="sm"
-                        onClick={handleInsightQuery}
-                        disabled={insightWidget.isProcessing || !insightWidget.input}
-                        className="rounded-full px-3 shrink-0"
-                        style={{ backgroundColor: '#FFFFFF', color: '#0D0D0D', border: 'none' }}
-                      >
-                        {insightWidget.isProcessing ? (
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                        ) : (
-                          <Search className="w-4 h-4" />
-                        )}
-                      </Button>
-                    </div>
-
-                    <AnimatePresence>
-                      {insightWidget.isProcessing && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          exit={{ opacity: 0, height: 0 }}
-                          className="space-y-2"
-                        >
-                          <div className="flex items-center gap-2 text-xs font-['DM_Sans']" style={{ color: '#0D0D0D' }}>
-                            <Loader2 className="w-3 h-3 animate-spin" />
-                            Analyzing your thought patterns...
+                    {latestResult?.synthesis ? (
+                      <div className="space-y-3">
+                        <p className="text-sm font-['DM_Sans'] font-light leading-relaxed" style={{ color: '#0D0D0D' }}>
+                          {latestResult.synthesis.summary}
+                        </p>
+                        {latestResult.synthesis.priorities.length > 0 && (
+                          <div className="space-y-1">
+                            <p className="text-xs font-['DM_Sans'] font-medium" style={{ color: '#0D0D0D' }}>Priorities</p>
+                            <ul className="space-y-1">
+                              {latestResult.synthesis.priorities.map((p, i) => (
+                                <li key={i} className="text-xs font-['DM_Sans'] font-light flex items-start gap-1.5" style={{ color: '#0D0D0D' }}>
+                                  <span className="mt-1.5 w-1 h-1 rounded-full shrink-0" style={{ backgroundColor: '#0D0D0D' }} />
+                                  {p}
+                                </li>
+                              ))}
+                            </ul>
                           </div>
-                          <div className="flex gap-1">
-                            {[0, 1, 2, 3, 4].map((i) => (
-                              <motion.div
+                        )}
+                        {latestResult.synthesis.themes.length > 0 && (
+                          <div className="flex flex-wrap gap-1.5">
+                            {latestResult.synthesis.themes.map((theme, i) => (
+                              <span
                                 key={i}
-                                className="w-2 h-2 rounded-full"
-                                style={{ backgroundColor: '#FFFFFF' }}
-                                animate={{
-                                  scale: [1, 1.3, 1],
-                                  opacity: [0.3, 1, 0.3],
-                                }}
-                                transition={{
-                                  duration: 1,
-                                  repeat: Infinity,
-                                  delay: i * 0.1,
-                                }}
-                              />
+                                className="rounded-full px-2.5 py-0.5 text-xs font-['DM_Sans']"
+                                style={{ backgroundColor: 'rgba(255,255,255,0.5)', color: '#0D0D0D' }}
+                              >
+                                {theme}
+                              </span>
                             ))}
                           </div>
-                        </motion.div>
-                      )}
-
-                      {insightWidget.showResponse && (
-                        <motion.div
-                          initial={{ opacity: 0, y: -10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          className="p-3 rounded-xl text-xs font-['DM_Sans'] font-light leading-relaxed"
-                          style={{ backgroundColor: '#FFFFFF', color: '#0D0D0D' }}
-                        >
-                          {insightWidget.response}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+                        )}
+                      </div>
+                    ) : (
+                      <p className="text-xs font-['DM_Sans'] font-light" style={{ color: '#0D0D0D' }}>
+                        Record a voice entry and run the pipeline to see insights here
+                      </p>
+                    )}
                   </CardContent>
                 </Card>
               </motion.div>
@@ -246,88 +130,32 @@ export function DashboardScreen() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
-                    <p className="text-xs font-['DM_Sans'] font-light" style={{ color: '#0D0D0D' }}>
-                      Discover recurring themes and behaviors
-                    </p>
-                    
-                    <div className="flex gap-2">
-                      <Input
-                        placeholder="e.g., When am I most creative?"
-                        value={patternWidget.input}
-                        onChange={(e) => setPatternWidget({ ...patternWidget, input: e.target.value })}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter" && patternWidget.input) {
-                            handlePatternQuery();
-                          }
-                        }}
-                        disabled={patternWidget.isProcessing}
-                        className="rounded-full font-['DM_Sans'] font-light text-xs"
-                        style={{
-                          backgroundColor: '#FFFFFF',
-                          borderColor: '#E8E5E0',
-                          color: '#0D0D0D',
-                        }}
-                      />
-                      <Button
-                        size="sm"
-                        onClick={handlePatternQuery}
-                        disabled={patternWidget.isProcessing || !patternWidget.input}
-                        className="rounded-full px-3 shrink-0"
-                        style={{ backgroundColor: '#FFFFFF', color: '#0D0D0D', border: 'none' }}
-                      >
-                        {patternWidget.isProcessing ? (
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                        ) : (
-                          <Search className="w-4 h-4" />
+                    {latestResult?.linker ? (
+                      <div className="space-y-3">
+                        {latestResult.linker.recurringPatterns.length > 0 && (
+                          <div className="space-y-1">
+                            <p className="text-xs font-['DM_Sans'] font-medium" style={{ color: '#0D0D0D' }}>Recurring Patterns</p>
+                            <ul className="space-y-1">
+                              {latestResult.linker.recurringPatterns.map((pattern, i) => (
+                                <li key={i} className="text-xs font-['DM_Sans'] font-light flex items-start gap-1.5" style={{ color: '#0D0D0D' }}>
+                                  <span className="mt-1.5 w-1 h-1 rounded-full shrink-0" style={{ backgroundColor: '#0D0D0D' }} />
+                                  {pattern}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
                         )}
-                      </Button>
-                    </div>
-
-                    <AnimatePresence>
-                      {patternWidget.isProcessing && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          exit={{ opacity: 0, height: 0 }}
-                          className="space-y-2"
-                        >
-                          <div className="flex items-center gap-2 text-xs font-['DM_Sans']" style={{ color: '#0D0D0D' }}>
-                            <Loader2 className="w-3 h-3 animate-spin" />
-                            Finding patterns across 247 entries...
-                          </div>
-                          <div className="flex gap-1">
-                            {[0, 1, 2, 3, 4].map((i) => (
-                              <motion.div
-                                key={i}
-                                className="w-2 h-2 rounded-full"
-                                style={{ backgroundColor: '#FFFFFF' }}
-                                animate={{
-                                  scale: [1, 1.3, 1],
-                                  opacity: [0.3, 1, 0.3],
-                                }}
-                                transition={{
-                                  duration: 1,
-                                  repeat: Infinity,
-                                  delay: i * 0.1,
-                                }}
-                              />
-                            ))}
-                          </div>
-                        </motion.div>
-                      )}
-
-                      {patternWidget.showResponse && (
-                        <motion.div
-                          initial={{ opacity: 0, y: -10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          className="p-3 rounded-xl text-xs font-['DM_Sans'] font-light leading-relaxed"
-                          style={{ backgroundColor: '#FFFFFF', color: '#0D0D0D' }}
-                        >
-                          {patternWidget.response}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+                        {latestResult.linker.connections.length > 0 && (
+                          <p className="text-xs font-['DM_Sans'] font-light" style={{ color: '#0D0D0D' }}>
+                            {latestResult.linker.connections.length} connection{latestResult.linker.connections.length !== 1 ? 's' : ''} found across entries
+                          </p>
+                        )}
+                      </div>
+                    ) : (
+                      <p className="text-xs font-['DM_Sans'] font-light" style={{ color: '#0D0D0D' }}>
+                        Patterns will appear after processing multiple entries
+                      </p>
+                    )}
                   </CardContent>
                 </Card>
               </motion.div>
@@ -346,88 +174,39 @@ export function DashboardScreen() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
-                    <p className="text-xs font-['DM_Sans'] font-light" style={{ color: '#0D0D0D' }}>
-                      Generate personalized action items
-                    </p>
-                    
-                    <div className="flex gap-2">
-                      <Input
-                        placeholder="e.g., What should I do next?"
-                        value={actionWidget.input}
-                        onChange={(e) => setActionWidget({ ...actionWidget, input: e.target.value })}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter" && actionWidget.input) {
-                            handleActionQuery();
-                          }
-                        }}
-                        disabled={actionWidget.isProcessing}
-                        className="rounded-full font-['DM_Sans'] font-light text-xs"
-                        style={{
-                          backgroundColor: '#FFFFFF',
-                          borderColor: '#E8E5E0',
-                          color: '#0D0D0D',
-                        }}
-                      />
-                      <Button
-                        size="sm"
-                        onClick={handleActionQuery}
-                        disabled={actionWidget.isProcessing || !actionWidget.input}
-                        className="rounded-full px-3 shrink-0"
-                        style={{ backgroundColor: '#FFFFFF', color: '#0D0D0D', border: 'none' }}
-                      >
-                        {actionWidget.isProcessing ? (
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                        ) : (
-                          <Search className="w-4 h-4" />
-                        )}
-                      </Button>
-                    </div>
-
-                    <AnimatePresence>
-                      {actionWidget.isProcessing && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          exit={{ opacity: 0, height: 0 }}
-                          className="space-y-2"
-                        >
-                          <div className="flex items-center gap-2 text-xs font-['DM_Sans']" style={{ color: '#0D0D0D' }}>
-                            <Loader2 className="w-3 h-3 animate-spin" />
-                            Generating personalized actions...
-                          </div>
-                          <div className="flex gap-1">
-                            {[0, 1, 2, 3, 4].map((i) => (
-                              <motion.div
-                                key={i}
-                                className="w-2 h-2 rounded-full"
-                                style={{ backgroundColor: '#FFFFFF' }}
-                                animate={{
-                                  scale: [1, 1.3, 1],
-                                  opacity: [0.3, 1, 0.3],
+                    {latestResult?.action ? (
+                      <div className="space-y-2">
+                        {latestResult.action.nextSteps.map((step, i) => (
+                          <div key={i} className="flex items-start gap-2">
+                            <div className="flex-1">
+                              <p className="text-xs font-['DM_Sans'] font-light leading-relaxed" style={{ color: '#0D0D0D' }}>
+                                {step.action}
+                              </p>
+                            </div>
+                            <div className="flex items-center gap-1.5 shrink-0">
+                              <span
+                                className="rounded-full px-2 py-0.5 text-[10px] font-['DM_Sans'] font-medium"
+                                style={{
+                                  backgroundColor: priorityColors[step.priority]?.bg ?? '#E8E5E0',
+                                  color: priorityColors[step.priority]?.text ?? '#0D0D0D',
                                 }}
-                                transition={{
-                                  duration: 1,
-                                  repeat: Infinity,
-                                  delay: i * 0.1,
-                                }}
-                              />
-                            ))}
+                              >
+                                {step.priority}
+                              </span>
+                              {step.timeEstimate && (
+                                <span className="text-[10px] font-['DM_Sans'] font-light" style={{ color: '#6B6B6B' }}>
+                                  {step.timeEstimate}
+                                </span>
+                              )}
+                            </div>
                           </div>
-                        </motion.div>
-                      )}
-
-                      {actionWidget.showResponse && (
-                        <motion.div
-                          initial={{ opacity: 0, y: -10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          className="p-3 rounded-xl text-xs font-['DM_Sans'] font-light leading-relaxed"
-                          style={{ backgroundColor: '#FFFFFF', color: '#0D0D0D' }}
-                        >
-                          {actionWidget.response}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-xs font-['DM_Sans'] font-light" style={{ color: '#0D0D0D' }}>
+                        Action items will be generated from your next voice entry
+                      </p>
+                    )}
                   </CardContent>
                 </Card>
               </motion.div>
@@ -439,7 +218,7 @@ export function DashboardScreen() {
             <h2 className="font-['Lora'] text-2xl tracking-[-0.01em]" style={{ color: '#0D0D0D' }}>
               Your Workspace
             </h2>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {/* TODAY Widget */}
               <motion.div
@@ -455,9 +234,9 @@ export function DashboardScreen() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-2 font-['DM_Sans'] font-light" style={{ color: '#0D0D0D' }}>
-                    <p className="text-sm">• Start blog draft</p>
-                    <p className="text-sm">• Morning walk completed ✓</p>
-                    <p className="text-sm">• Review side hustle ideas</p>
+                    <p className="text-sm">Start blog draft</p>
+                    <p className="text-sm">Morning walk completed</p>
+                    <p className="text-sm">Review side hustle ideas</p>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -481,7 +260,7 @@ export function DashboardScreen() {
                       Last mention: 2 minutes ago
                     </p>
                     <Button variant="outline" size="sm" className="w-full mt-2 rounded-full border-[1.5px] font-['Outfit'] font-semibold text-xs tracking-[0.08em] uppercase" style={{ borderColor: '#0D0D0D', color: '#0D0D0D' }}>
-                      Explore →
+                      Explore
                     </Button>
                   </CardContent>
                 </Card>
@@ -535,7 +314,7 @@ export function DashboardScreen() {
                       <p style={{ color: '#6B6B6B' }}>Project review</p>
                     </div>
                     <div className="text-sm mt-3" style={{ color: '#C8D5B0' }}>
-                      <p>✓ Free slot at 4:00 PM for writing</p>
+                      <p>Free slot at 4:00 PM for writing</p>
                     </div>
                   </CardContent>
                 </Card>
