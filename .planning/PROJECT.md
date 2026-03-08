@@ -22,7 +22,7 @@ Turn messy, unstructured thoughts into organized priorities, connected insights,
 
 ### Active
 
-- [ ] Real speech-to-text via Web Speech API for voice dump
+- [ ] Real speech-to-text via OpenAI Realtime API for voice dump
 - [ ] SynthesisAgent: processes raw transcript + past entries into priorities, tasks, themes, blockers, sparks
 - [ ] LinkerAgent: takes past notes + current entry, produces semantic connections and recurring patterns
 - [ ] ResearchAgent: takes creative sparks + themes, queries Exa API for curated references and inspiration
@@ -50,7 +50,7 @@ The existing codebase was generated via Figma Make. It has a warm, earthy aesthe
 Key technical context:
 - OpenAI API for all LLM agent calls
 - Exa API for ResearchAgent web search
-- Web Speech API (browser-native) for speech-to-text
+- OpenAI Realtime API for speech-to-text (same client as agent LLM calls)
 - localStorage + IndexedDB for persistence
 - No backend server — all processing happens client-side or via direct API calls
 
