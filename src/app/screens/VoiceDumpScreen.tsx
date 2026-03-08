@@ -7,7 +7,7 @@ import { useVoiceCapture } from "../hooks/useVoiceCapture";
 import { saveEntry } from "../lib/storage";
 import type { TranscriptSegment, Entry } from "../lib/types";
 import { toast, Toaster } from "sonner";
-import cloudImage from 'figma:asset/3c7af6a14225d1ee2a77d186872f69245c52483a.png';
+import cloudImage from '../../assets/3c7af6a14225d1ee2a77d186872f69245c52483a.png';
 
 const DURATION_PRESETS = [
   { label: "2 min", seconds: 120 },

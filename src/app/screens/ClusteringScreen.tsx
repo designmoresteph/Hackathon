@@ -6,7 +6,7 @@ import { Link2 } from "lucide-react";
 import { DndProvider, useDrag } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { getEntry } from "../lib/storage";
-import cloudImage from 'figma:asset/3c7af6a14225d1ee2a77d186872f69245c52483a.png';
+import cloudImage from '../../assets/3c7af6a14225d1ee2a77d186872f69245c52483a.png';
 
 interface Cluster {
   id: string;
