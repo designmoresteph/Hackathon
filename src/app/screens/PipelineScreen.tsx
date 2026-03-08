@@ -37,35 +37,35 @@ const AGENTS: AgentConfig[] = [
     label: "Synthesis",
     description: "Extracting priorities, themes, and key insights",
     icon: Sparkles,
-    color: "#C8D5B0",
+    color: "#B0C098",
   },
   {
     name: "linker",
     label: "Pattern Linker",
     description: "Finding connections to your past entries",
     icon: Link2,
-    color: "#F5E642",
+    color: "#D8E0B8",
   },
   {
     name: "research",
     label: "Research",
     description: "Discovering relevant resources and references",
     icon: Search,
-    color: "#F0D5D0",
+    color: "#C4807A",
   },
   {
     name: "action",
     label: "Action Planner",
     description: "Creating prioritized next steps",
     icon: Lightbulb,
-    color: "#F5C4A1",
+    color: "#C4957A",
   },
   {
     name: "calendar",
     label: "Calendar",
     description: "Proposing time blocks for your actions",
     icon: Calendar,
-    color: "#C8D5B0",
+    color: "#B0C098",
   },
 ];
 
@@ -75,7 +75,7 @@ function StatusIndicator({ status }: { status: AgentStatus }) {
       return (
         <div
           className="w-3 h-3 rounded-full"
-          style={{ backgroundColor: "#D1D1D1" }}
+          style={{ backgroundColor: "rgba(26,21,16,0.15)" }}
         />
       );
     case "running":
@@ -84,7 +84,7 @@ function StatusIndicator({ status }: { status: AgentStatus }) {
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
         >
-          <Loader2 className="w-5 h-5" style={{ color: "#0D0D0D" }} />
+          <Loader2 className="w-5 h-5" style={{ color: "#1A1510" }} />
         </motion.div>
       );
     case "done":
@@ -133,8 +133,9 @@ function AgentCard({
         style={{
           backgroundColor: isCurrent
             ? `${agent.color}20`
-            : "rgba(255,255,255,0.6)",
-          borderColor: isCurrent ? agent.color : "rgba(232,229,224,0.5)",
+            : "rgba(255,255,255,0.55)",
+          backdropFilter: 'blur(16px) saturate(1.2)',
+          borderColor: isCurrent ? agent.color : "rgba(255,255,255,0.6)",
           borderWidth: isCurrent ? "2px" : "1px",
           transform: isCurrent ? "scale(1.02)" : "scale(1)",
         }}
@@ -149,15 +150,15 @@ function AgentCard({
             <Icon
               className="w-5 h-5"
               strokeWidth={1.5}
-              style={{ color: "#0D0D0D" }}
+              style={{ color: "#1A1510" }}
             />
           </div>
 
           <div className="flex-1 min-w-0">
             <h3
-              className="font-['Lora'] text-lg"
+              className="font-['Playfair_Display'] italic text-lg"
               style={{
-                color: status === "idle" ? "#9B9B9B" : "#0D0D0D",
+                color: status === "idle" ? "rgba(26,21,16,0.35)" : "#1A1510",
               }}
             >
               {agent.label}
@@ -165,7 +166,7 @@ function AgentCard({
             <p
               className="font-['DM_Sans'] text-sm"
               style={{
-                color: status === "idle" ? "#C0C0C0" : "#6B6B6B",
+                color: status === "idle" ? "rgba(26,21,16,0.25)" : "rgba(26,21,16,0.45)",
               }}
             >
               {agent.description}
@@ -264,14 +265,14 @@ export function PipelineScreen() {
   return (
     <div
       className="min-h-screen flex items-center justify-center p-8"
-      style={{ backgroundColor: "#F7F5F0" }}
+      style={{ backgroundColor: "#EEF5F8" }}
     >
       <div className="w-full max-w-lg">
         <motion.h2
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="font-['Lora'] text-3xl text-center mb-2"
-          style={{ color: "#0D0D0D" }}
+          className="font-['Playfair_Display'] italic text-3xl text-center mb-2"
+          style={{ color: "#1A1510" }}
         >
           Processing your thoughts...
         </motion.h2>
@@ -280,7 +281,7 @@ export function PipelineScreen() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
           className="font-['DM_Sans'] text-sm text-center mb-10"
-          style={{ color: "#6B6B6B" }}
+          style={{ color: "rgba(26,21,16,0.45)" }}
         >
           Five AI agents are analyzing your voice dump
         </motion.p>
@@ -299,10 +300,10 @@ export function PipelineScreen() {
             </p>
             <Button
               onClick={() => navigate("/")}
-              className="rounded-full font-['Outfit'] font-semibold text-xs tracking-[0.08em] uppercase h-12 px-7"
+              className="rounded-full font-['DM_Sans'] text-[13px] font-medium tracking-[0.04em] h-12 px-7"
               style={{
-                backgroundColor: "#F5E642",
-                color: "#0D0D0D",
+                backgroundColor: "#1A1510",
+                color: "#F0E8D8",
                 border: "none",
               }}
             >
@@ -343,10 +344,11 @@ export function PipelineScreen() {
                 <Button
                   onClick={handleRetry}
                   variant="outline"
-                  className="rounded-full font-['Outfit'] font-semibold text-xs tracking-[0.08em] uppercase h-10 px-6"
+                  className="rounded-full font-['DM_Sans'] text-[13px] font-medium tracking-[0.04em] h-10 px-6"
                   style={{
-                    borderColor: "#0D0D0D",
-                    color: "#0D0D0D",
+                    background: "rgba(26,21,16,0.08)",
+                    border: "1.5px solid rgba(26,21,16,0.20)",
+                    color: "#1A1510",
                   }}
                 >
                   Retry
@@ -363,17 +365,17 @@ export function PipelineScreen() {
               >
                 <p
                   className="font-['DM_Sans'] text-sm mb-4"
-                  style={{ color: "#6B6B6B" }}
+                  style={{ color: "rgba(26,21,16,0.45)" }}
                 >
                   All agents have finished processing
                 </p>
                 <Button
                   onClick={() => navigate("/dashboard")}
                   size="lg"
-                  className="rounded-full font-['Outfit'] font-semibold text-xs tracking-[0.08em] uppercase h-12 px-7 transition-all hover:-translate-y-0.5"
+                  className="rounded-full font-['DM_Sans'] text-[13px] font-medium tracking-[0.04em] h-12 px-7 transition-all hover:-translate-y-0.5"
                   style={{
-                    backgroundColor: "#F5E642",
-                    color: "#0D0D0D",
+                    backgroundColor: "#1A1510",
+                    color: "#F0E8D8",
                     border: "none",
                   }}
                 >

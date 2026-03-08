@@ -1,55 +1,80 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* mymind Design System Colors */
+  /* Serene Design System Colors */
+
+  /* Sky (Primary) */
+  --sky-white: #EEF5F8;
+  --sky-mist: #C8DCE8;
+  --sky-cloud: #7FBCCC;
+  --sky-deep: #4A8FA8;
+  --sky-shadow: #2D6478;
+
+  /* Meadow (Secondary) */
+  --meadow-white: #D8DEC8;
+  --meadow-light: #B0C098;
+  --meadow-mid: #8A9E78;
+  --meadow-deep: #4A5E38;
+  --meadow-glow: #D8E0B8;
+
+  /* Earth (Tertiary) */
+  --earth-warm: #C4957A;
+  --earth-pink: #C4807A;
+  --earth-olive: #8A9050;
+  --earth-cream: #F0E0C0;
+  --earth-dark: #3D2010;
+
+  /* Functional */
+  --text-on-light: #1A1510;
+  --text-on-dark: #F0E8D8;
+  --text-muted-serene: rgba(26,21,16,0.45);
+  --text-muted-dark: rgba(240,232,216,0.45);
+  --border-light: rgba(26,21,16,0.10);
+  --border-dark: rgba(240,232,216,0.15);
+  --agent-thread: rgba(220,190,120,0.5);
+  --agent-glow: rgba(220,190,120,0.15);
+
+  /* Legacy aliases */
   --white: #FFFFFF;
-  --off-white: #F7F5F0;
-  --cream: #F2EFE9;
-  --black: #0D0D0D;
-  --dark: #1A1A1A;
-  --mid-gray: #6B6B6B;
-  --light-gray: #E8E5E0;
-  --muted: #A8A49E;
-  
-  --yellow: #F5E642;
-  --yellow-hover: #EDD800;
-  --peach: #F5C4A1;
-  --sage: #C8D5B0;
-  --blush: #F0D5D0;
-  
-  --text-primary: #0D0D0D;
-  --text-secondary: #6B6B6B;
-  --text-muted: #A8A49E;
-  --bg-primary: #F7F5F0;
-  --bg-card: #FFFFFF;
-  --border-color: #E8E5E0;
-  --cta: #F5E642;
-  
+  --off-white: #EEF5F8;
+  --cream: #F0E0C0;
+  --black: #1A1510;
+  --dark: #1A1510;
+  --mid-gray: rgba(26,21,16,0.45);
+  --light-gray: rgba(26,21,16,0.10);
+  --muted: rgba(26,21,16,0.45);
+
+  --text-primary: #1A1510;
+  --text-secondary: rgba(26,21,16,0.45);
+  --bg-primary: #EEF5F8;
+  --bg-card: rgba(255,255,255,0.55);
+  --border-color: rgba(26,21,16,0.10);
+
   /* Tailwind compatibility */
   --font-size: 16px;
-  --background: #F7F5F0;
-  --foreground: #0D0D0D;
-  --card: #FFFFFF;
-  --card-foreground: #0D0D0D;
+  --background: #EEF5F8;
+  --foreground: #1A1510;
+  --card: rgba(255,255,255,0.55);
+  --card-foreground: #1A1510;
   --popover: #FFFFFF;
-  --popover-foreground: #0D0D0D;
-  --primary: #0D0D0D;
-  --primary-foreground: #FFFFFF;
-  --secondary: #F2EFE9;
-  --secondary-foreground: #0D0D0D;
-  --muted: #F2EFE9;
-  --muted-foreground: #6B6B6B;
-  --accent: #F5E642;
-  --accent-foreground: #0D0D0D;
+  --popover-foreground: #1A1510;
+  --primary: #1A1510;
+  --primary-foreground: #F0E8D8;
+  --secondary: #C8DCE8;
+  --secondary-foreground: #1A1510;
+  --muted: #C8DCE8;
+  --muted-foreground: rgba(26,21,16,0.45);
+  --accent: #4A8FA8;
+  --accent-foreground: #F0E8D8;
   --destructive: #d4183d;
   --destructive-foreground: #ffffff;
-  --border: #E8E5E0;
+  --border: rgba(26,21,16,0.10);
   --input: transparent;
-  --input-background: #FFFFFF;
-  --switch-background: #E8E5E0;
+  --input-background: rgba(255,255,255,0.55);
+  --switch-background: rgba(26,21,16,0.10);
   --font-weight-medium: 500;
   --font-weight-normal: 300;
-  --ring: #6B6B6B;
+  --ring: #4A8FA8;
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);

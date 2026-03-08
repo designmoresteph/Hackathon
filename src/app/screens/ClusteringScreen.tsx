@@ -24,7 +24,7 @@ interface Connection {
 
 const ITEM_TYPE = "CLUSTER";
 
-const CLUSTER_COLORS = ["#C8D5B0", "#F0D5D0", "#F5E642", "#F5C4A1"];
+const CLUSTER_COLORS = ["#B0C098", "#C4807A", "#D8E0B8", "#C4957A"];
 
 const STOP_WORDS = new Set([
   "a", "an", "the", "is", "are", "was", "were", "be", "been", "being",
@@ -98,11 +98,11 @@ const MOCK_WORDS = [
 ];
 
 const MOCK_CLUSTERS: Cluster[] = [
-  { id: "1", label: "Blog", color: "#C8D5B0", words: ["blog", "writing", "creative", "publish"], x: 15, y: 25 },
-  { id: "2", label: "Day job stress", color: "#F0D5D0", words: ["deadlines", "stress", "project", "team"], x: 55, y: 20 },
-  { id: "3", label: "Morning routine", color: "#F5E642", words: ["morning", "routine", "walk", "coffee"], x: 30, y: 55 },
-  { id: "4", label: "Creative block", color: "#F5C4A1", words: ["blocked", "frustrated", "stuck"], x: 65, y: 60 },
-  { id: "5", label: "Side hustle", color: "#C8D5B0", words: ["side hustle", "startup", "idea", "weekend"], x: 10, y: 65 },
+  { id: "1", label: "Blog", color: "#B0C098", words: ["blog", "writing", "creative", "publish"], x: 15, y: 25 },
+  { id: "2", label: "Day job stress", color: "#C4807A", words: ["deadlines", "stress", "project", "team"], x: 55, y: 20 },
+  { id: "3", label: "Morning routine", color: "#D8E0B8", words: ["morning", "routine", "walk", "coffee"], x: 30, y: 55 },
+  { id: "4", label: "Creative block", color: "#C4957A", words: ["blocked", "frustrated", "stuck"], x: 65, y: 60 },
+  { id: "5", label: "Side hustle", color: "#B0C098", words: ["side hustle", "startup", "idea", "weekend"], x: 10, y: 65 },
 ];
 
 const MOCK_CONNECTIONS: Connection[] = [
@@ -143,7 +143,7 @@ function WordCloud({ word, delay }: { word: string; delay: number }) {
         />
         {/* Word centered on cloud */}
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-sm font-['DM_Sans'] font-light" style={{ color: '#0D0D0D' }}>
+          <span className="text-sm font-['DM_Sans'] font-light" style={{ color: '#1A1510' }}>
             {word}
           </span>
         </div>
@@ -233,7 +233,7 @@ function ClusterCloud({
             <div
               className="absolute inset-0"
               style={{
-                border: '3px dashed #0D0D0D',
+                border: '3px dashed #1A1510',
                 borderRadius: '50%',
                 opacity: 0.6,
               }}
@@ -243,7 +243,7 @@ function ClusterCloud({
 
         {/* Cluster content */}
         <div className="absolute inset-0 flex flex-col items-center justify-center p-8 pt-12 pointer-events-none">
-          <h3 className="font-['Lora'] text-xl mb-4 text-center" style={{ color: '#0D0D0D' }}>
+          <h3 className="font-['Playfair_Display'] italic text-xl mb-4 text-center" style={{ color: '#1A1510' }}>
             {cluster.label}
           </h3>
           <div className="flex flex-wrap gap-2 justify-center max-w-[200px]">
@@ -252,9 +252,10 @@ function ClusterCloud({
                 key={i}
                 className="text-xs px-3 py-1 rounded-full font-['DM_Sans'] font-light"
                 style={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.7)',
-                  color: '#0D0D0D',
-                  border: '1px solid rgba(232, 229, 224, 0.5)',
+                  backgroundColor: 'rgba(255,255,255,0.55)',
+                  backdropFilter: 'blur(8px)',
+                  color: '#1A1510',
+                  border: '1px solid rgba(255,255,255,0.6)',
                 }}
               >
                 {word}
@@ -373,14 +374,14 @@ function ClusteringScreenContent() {
   };
 
   return (
-    <div className="min-h-screen p-8 relative overflow-hidden" style={{ backgroundColor: '#F7F5F0' }}>
+    <div className="min-h-screen p-8 relative overflow-hidden" style={{ backgroundColor: '#EEF5F8' }}>
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between mb-12">
           <motion.h2
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="font-['Lora'] text-4xl tracking-[-0.01em]"
-            style={{ color: '#0D0D0D' }}
+            className="font-['Playfair_Display'] italic text-4xl tracking-[-0.01em]"
+            style={{ color: '#1A1510' }}
           >
             Your thoughts are organizing...
           </motion.h2>
@@ -397,19 +398,18 @@ function ClusteringScreenContent() {
                   setConnectMode(!connectMode);
                   setSelectedCluster(null);
                 }}
-                className="flex items-center gap-2 rounded-full font-['Outfit'] font-semibold text-xs tracking-[0.08em] uppercase h-12 px-6 transition-all hover:-translate-y-0.5"
+                className="flex items-center gap-2 rounded-full font-['DM_Sans'] font-medium text-[13px] tracking-[0.04em] h-12 px-6 transition-all hover:-translate-y-0.5"
                 style={
                   connectMode
                     ? {
-                        backgroundColor: '#F5E642',
-                        color: '#0D0D0D',
+                        backgroundColor: '#1A1510',
+                        color: '#F0E8D8',
                         border: 'none',
                       }
                     : {
-                        backgroundColor: 'transparent',
-                        borderColor: '#0D0D0D',
-                        borderWidth: '1.5px',
-                        color: '#0D0D0D',
+                        background: 'rgba(26,21,16,0.08)',
+                        border: '1.5px solid rgba(26,21,16,0.20)',
+                        color: '#1A1510',
                       }
                 }
               >
@@ -433,12 +433,12 @@ function ClusteringScreenContent() {
                   <motion.path
                     key={i}
                     d={drawConnection(fromCluster, toCluster)}
-                    stroke="#0D0D0D"
-                    strokeWidth="1.5"
+                    stroke="rgba(220,190,120,0.45)"
+                    strokeWidth="0.75"
                     fill="none"
-                    strokeDasharray="5,5"
+                    strokeDasharray="3 10"
                     initial={{ pathLength: 0, opacity: 0 }}
-                    animate={{ pathLength: 1, opacity: 0.3 }}
+                    animate={{ pathLength: 1, opacity: 1 }}
                     transition={{ duration: 0.8 }}
                   />
                 );
@@ -473,23 +473,23 @@ function ClusteringScreenContent() {
             className="flex justify-center mt-12 gap-4"
           >
             {connectMode ? (
-              <p className="text-sm self-center font-['DM_Sans']" style={{ color: '#6B6B6B' }}>
+              <p className="text-sm self-center font-['DM_Sans']" style={{ color: 'rgba(26,21,16,0.45)' }}>
                 {selectedCluster
                   ? "Click another cluster to connect"
                   : "Click a cluster to start connecting"}
               </p>
             ) : (
-              <p className="text-sm self-center font-['DM_Sans']" style={{ color: '#6B6B6B' }}>
+              <p className="text-sm self-center font-['DM_Sans']" style={{ color: 'rgba(26,21,16,0.45)' }}>
                 Drag clouds to organize your thoughts
               </p>
             )}
             <Button
               onClick={() => navigate(`/pipeline?entryId=${entryId || ''}`)}
               size="lg"
-              className="rounded-full font-['Outfit'] font-semibold text-xs tracking-[0.08em] uppercase h-12 px-7 transition-all hover:-translate-y-0.5"
+              className="rounded-full font-['DM_Sans'] font-medium text-[13px] tracking-[0.04em] h-12 px-7 transition-all hover:-translate-y-0.5"
               style={{
-                backgroundColor: '#F5E642',
-                color: '#0D0D0D',
+                backgroundColor: '#1A1510',
+                color: '#F0E8D8',
                 border: 'none',
               }}
             >

@@ -45,7 +45,7 @@ export function WelcomeScreen() {
             transition={{ delay: 0.3 }}
             className="space-y-3"
           >
-            <p className="text-xs tracking-[0.12em] uppercase font-['Outfit'] font-semibold" style={{ color: '#6B6B6B' }}>
+            <p className="text-[9px] tracking-[0.22em] uppercase font-['DM_Mono']" style={{ color: 'rgba(26,21,16,0.45)' }}>
               Who are you today?
             </p>
             <Input
@@ -54,10 +54,11 @@ export function WelcomeScreen() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="text-center border font-['DM_Sans'] font-light"
-              style={{ 
-                backgroundColor: '#FFFFFF',
-                borderColor: '#E8E5E0',
-                color: '#0D0D0D'
+              style={{
+                backgroundColor: 'rgba(255,255,255,0.55)',
+                backdropFilter: 'blur(16px)',
+                borderColor: 'rgba(26,21,16,0.10)',
+                color: '#1A1510'
               }}
             />
           </motion.div>
@@ -67,8 +68,8 @@ export function WelcomeScreen() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6 }}
-            className="font-['Playfair_Display'] text-5xl md:text-6xl leading-[1.05] tracking-[-0.02em]"
-            style={{ color: '#0D0D0D' }}
+            className="font-['Playfair_Display'] italic text-5xl md:text-6xl leading-[1.05] tracking-[-0.02em]"
+            style={{ color: '#1A1510' }}
           >
             {getGreeting()}. What's on your mind?
           </motion.h1>
@@ -83,11 +84,12 @@ export function WelcomeScreen() {
             <Button
               onClick={() => handleStart("voice")}
               variant="outline"
-              className="h-14 rounded-full border-[1.5px] font-['Outfit'] font-semibold text-xs tracking-[0.08em] uppercase transition-all hover:-translate-y-0.5"
+              className="h-14 font-['DM_Sans'] text-[13px] font-normal tracking-[0.02em] transition-all hover:-translate-y-0.5"
               style={{
-                backgroundColor: 'transparent',
-                borderColor: '#0D0D0D',
-                color: '#0D0D0D'
+                background: 'rgba(26,21,16,0.08)',
+                border: '1.5px solid rgba(26,21,16,0.20)',
+                borderRadius: '100px',
+                color: '#1A1510'
               }}
             >
               <Mic className="w-5 h-5 mr-3" strokeWidth={1.5} />
@@ -97,11 +99,12 @@ export function WelcomeScreen() {
             <Button
               onClick={() => handleStart("type")}
               variant="outline"
-              className="h-14 rounded-full border-[1.5px] font-['Outfit'] font-semibold text-xs tracking-[0.08em] uppercase transition-all hover:-translate-y-0.5"
+              className="h-14 font-['DM_Sans'] text-[13px] font-normal tracking-[0.02em] transition-all hover:-translate-y-0.5"
               style={{
-                backgroundColor: 'transparent',
-                borderColor: '#0D0D0D',
-                color: '#0D0D0D'
+                background: 'rgba(26,21,16,0.08)',
+                border: '1.5px solid rgba(26,21,16,0.20)',
+                borderRadius: '100px',
+                color: '#1A1510'
               }}
             >
               <Type className="w-5 h-5 mr-3" strokeWidth={1.5} />
@@ -111,11 +114,12 @@ export function WelcomeScreen() {
             <Button
               onClick={() => handleStart("drop")}
               variant="outline"
-              className="h-14 rounded-full border-[1.5px] font-['Outfit'] font-semibold text-xs tracking-[0.08em] uppercase transition-all hover:-translate-y-0.5"
+              className="h-14 font-['DM_Sans'] text-[13px] font-normal tracking-[0.02em] transition-all hover:-translate-y-0.5"
               style={{
-                backgroundColor: 'transparent',
-                borderColor: '#0D0D0D',
-                color: '#0D0D0D'
+                background: 'rgba(26,21,16,0.08)',
+                border: '1.5px solid rgba(26,21,16,0.20)',
+                borderRadius: '100px',
+                color: '#1A1510'
               }}
             >
               <ImageIcon className="w-5 h-5 mr-3" strokeWidth={1.5} />
@@ -128,7 +132,7 @@ export function WelcomeScreen() {
             animate={{ opacity: 1 }}
             transition={{ delay: 1.2 }}
             className="text-sm font-['Cormorant_Garamond'] italic font-light leading-relaxed"
-            style={{ color: '#A8A49E' }}
+            style={{ color: 'rgba(26,21,16,0.35)' }}
           >
             Feels like opening a journal, not launching an app
           </motion.p>

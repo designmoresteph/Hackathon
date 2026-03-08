@@ -118,7 +118,7 @@ export function VoiceDumpScreen() {
   // Pre-recording configuration screen
   if (isConfiguring) {
     return (
-      <div className="min-h-screen p-8 relative overflow-hidden flex flex-col items-center justify-center" style={{ backgroundColor: '#F7F5F0' }}>
+      <div className="min-h-screen p-8 relative overflow-hidden flex flex-col items-center justify-center" style={{ backgroundColor: '#EEF5F8' }}>
         <Toaster position="top-center" />
 
         {/* Cancel Button */}
@@ -132,7 +132,7 @@ export function VoiceDumpScreen() {
             size="icon"
             onClick={() => navigate("/")}
             className="transition-all hover:-translate-y-0.5"
-            style={{ color: '#0D0D0D' }}
+            style={{ color: '#1A1510' }}
           >
             <X className="w-6 h-6" strokeWidth={1.5} />
           </Button>
@@ -145,8 +145,8 @@ export function VoiceDumpScreen() {
           className="w-full max-w-md space-y-10 text-center"
         >
           <h2
-            className="font-['Lora'] text-4xl tracking-[-0.01em]"
-            style={{ color: '#0D0D0D' }}
+            className="font-['Playfair_Display'] italic text-4xl tracking-[-0.01em]"
+            style={{ color: '#1A1510' }}
           >
             How long do you want to talk?
           </h2>
@@ -157,12 +157,12 @@ export function VoiceDumpScreen() {
               <button
                 key={preset.seconds}
                 onClick={() => handleSelectPreset(preset.seconds)}
-                className="px-6 py-3 rounded-full font-['Outfit'] font-semibold text-sm tracking-[0.06em] uppercase transition-all hover:-translate-y-0.5"
+                className="px-6 py-3 rounded-full font-['DM_Sans'] text-[13px] font-medium tracking-[0.04em] transition-all hover:-translate-y-0.5"
                 style={{
-                  backgroundColor: durationSeconds === preset.seconds && customMinutes === "" ? '#F5E642' : 'transparent',
+                  backgroundColor: durationSeconds === preset.seconds && customMinutes === "" ? '#1A1510' : 'rgba(26,21,16,0.08)',
                   border: '1.5px solid',
-                  borderColor: durationSeconds === preset.seconds && customMinutes === "" ? '#F5E642' : '#E8E5E0',
-                  color: '#0D0D0D',
+                  borderColor: durationSeconds === preset.seconds && customMinutes === "" ? '#1A1510' : 'rgba(26,21,16,0.20)',
+                  color: durationSeconds === preset.seconds && customMinutes === "" ? '#F0E8D8' : '#1A1510',
                 }}
               >
                 {preset.label}
@@ -172,7 +172,7 @@ export function VoiceDumpScreen() {
 
           {/* Custom minutes input */}
           <div className="flex items-center justify-center gap-3">
-            <span className="font-['DM_Sans'] text-sm" style={{ color: '#6B6B6B' }}>
+            <span className="font-['DM_Sans'] text-sm" style={{ color: 'rgba(26,21,16,0.45)' }}>
               or
             </span>
             <input
@@ -182,14 +182,15 @@ export function VoiceDumpScreen() {
               placeholder="Custom"
               value={customMinutes}
               onChange={(e) => handleCustomMinutesChange(e.target.value)}
-              className="w-24 px-4 py-2 rounded-full text-center font-['DM_Sans'] text-sm border outline-none focus:ring-2 focus:ring-[#F5E642]"
+              className="w-24 px-4 py-2 rounded-full text-center font-['DM_Sans'] text-sm border outline-none focus:ring-2 focus:ring-[#4A8FA8]"
               style={{
-                backgroundColor: '#FFFFFF',
-                borderColor: '#E8E5E0',
-                color: '#0D0D0D',
+                backgroundColor: 'rgba(255,255,255,0.55)',
+                backdropFilter: 'blur(16px)',
+                borderColor: 'rgba(26,21,16,0.10)',
+                color: '#1A1510',
               }}
             />
-            <span className="font-['DM_Sans'] text-sm" style={{ color: '#6B6B6B' }}>
+            <span className="font-['DM_Sans'] text-sm" style={{ color: 'rgba(26,21,16,0.45)' }}>
               min
             </span>
           </div>
@@ -202,11 +203,12 @@ export function VoiceDumpScreen() {
           >
             <button
               onClick={handleStartRecording}
-              className="w-full h-14 rounded-full font-['Outfit'] font-semibold text-xs tracking-[0.08em] uppercase transition-all hover:-translate-y-0.5 hover:shadow-lg"
+              className="w-full h-14 rounded-full font-['DM_Sans'] text-[13px] font-medium tracking-[0.04em] transition-all hover:-translate-y-0.5 hover:shadow-lg"
               style={{
-                backgroundColor: '#F5E642',
-                color: '#0D0D0D',
+                backgroundColor: '#1A1510',
+                color: '#F0E8D8',
                 border: 'none',
+                boxShadow: '0 4px 30px rgba(26,21,16,0.12)',
               }}
             >
               Start Recording
@@ -218,7 +220,7 @@ export function VoiceDumpScreen() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6 }}
             className="text-sm font-['Cormorant_Garamond'] italic font-light"
-            style={{ color: '#6B6B6B' }}
+            style={{ color: 'rgba(26,21,16,0.45)' }}
           >
             Walk around. Best ideas come when you move.
           </motion.p>
@@ -229,7 +231,7 @@ export function VoiceDumpScreen() {
 
   // Recording screen
   return (
-    <div className="min-h-screen p-8 relative overflow-hidden" style={{ backgroundColor: '#F7F5F0' }}>
+    <div className="min-h-screen p-8 relative overflow-hidden" style={{ backgroundColor: '#EEF5F8' }}>
       <Toaster position="top-center" />
 
       {/* Cancel Button */}
@@ -246,7 +248,7 @@ export function VoiceDumpScreen() {
             navigate("/");
           }}
           className="transition-all hover:-translate-y-0.5"
-          style={{ color: '#0D0D0D' }}
+          style={{ color: '#1A1510' }}
         >
           <X className="w-6 h-6" strokeWidth={1.5} />
         </Button>
@@ -258,8 +260,8 @@ export function VoiceDumpScreen() {
           <motion.h2
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="font-['Lora'] text-4xl tracking-[-0.01em]"
-            style={{ color: '#0D0D0D' }}
+            className="font-['Playfair_Display'] italic text-4xl tracking-[-0.01em]"
+            style={{ color: '#1A1510' }}
           >
             Let your thoughts flow...
           </motion.h2>
@@ -269,22 +271,22 @@ export function VoiceDumpScreen() {
             animate={{ opacity: 1, scale: 1 }}
             className="flex items-center gap-4"
           >
-            <div className="flex items-center gap-3 px-6 py-3 rounded-full" style={{ backgroundColor: '#FFFFFF', border: '1.5px solid #E8E5E0' }}>
+            <div className="flex items-center gap-3 px-6 py-3 rounded-full backdrop-blur-md" style={{ backgroundColor: 'rgba(255,255,255,0.55)', border: '1.5px solid rgba(26,21,16,0.10)' }}>
               <Mic className="w-5 h-5 text-red-500 animate-pulse" strokeWidth={1.5} />
-              <span className="font-['Outfit'] font-semibold text-sm tracking-[0.08em] uppercase" style={{ color: '#0D0D0D' }}>
+              <span className="font-['DM_Sans'] text-[13px] font-medium tracking-[0.04em]" style={{ color: '#1A1510' }}>
                 Recording
               </span>
             </div>
-            <div className="font-['Playfair_Display'] text-3xl tracking-[-0.02em]" style={{ color: '#0D0D0D' }}>
+            <div className="font-['Playfair_Display'] text-3xl tracking-[-0.02em]" style={{ color: '#1A1510' }}>
               {formatTime(timeLeft)}
             </div>
             {/* Done button */}
             <button
               onClick={handleDone}
-              className="px-6 py-3 rounded-full font-['Outfit'] font-semibold text-xs tracking-[0.08em] uppercase transition-all hover:-translate-y-0.5"
+              className="px-6 py-3 rounded-full font-['DM_Sans'] text-[13px] font-medium tracking-[0.04em] transition-all hover:-translate-y-0.5"
               style={{
-                backgroundColor: '#0D0D0D',
-                color: '#FFFFFF',
+                backgroundColor: '#1A1510',
+                color: '#F0E8D8',
               }}
             >
               Done
@@ -312,11 +314,11 @@ export function VoiceDumpScreen() {
                 alt=""
                 className="w-96 h-60 object-contain opacity-90"
               />
-              {/* Yellow tint overlay */}
+              {/* Tint overlay */}
               <div
                 className="absolute inset-0 mix-blend-multiply opacity-30"
                 style={{
-                  backgroundColor: '#F5E642',
+                  backgroundColor: '#4A8FA8',
                   WebkitMaskImage: `url(${cloudImage})`,
                   WebkitMaskSize: 'contain',
                   WebkitMaskRepeat: 'no-repeat',
@@ -341,7 +343,7 @@ export function VoiceDumpScreen() {
                     ease: "easeInOut",
                   }}
                 >
-                  <Mic className="w-12 h-12" strokeWidth={1.5} style={{ color: '#0D0D0D' }} />
+                  <Mic className="w-12 h-12" strokeWidth={1.5} style={{ color: '#1A1510' }} />
                 </motion.div>
               </div>
             </motion.div>
@@ -377,7 +379,7 @@ export function VoiceDumpScreen() {
                 <div
                   className="absolute inset-0 mix-blend-multiply opacity-25"
                   style={{
-                    backgroundColor: ['#C8D5B0', '#F0D5D0', '#F5C4A1'][i % 3],
+                    backgroundColor: ['#B0C098', '#C4807A', '#C4957A'][i % 3],
                     WebkitMaskImage: `url(${cloudImage})`,
                     WebkitMaskSize: 'contain',
                     WebkitMaskRepeat: 'no-repeat',
@@ -390,7 +392,7 @@ export function VoiceDumpScreen() {
                 />
                 {/* Text on cloud */}
                 <div className="absolute inset-0 flex items-center justify-center px-8">
-                  <p className="text-sm font-['DM_Sans'] font-light text-center leading-relaxed" style={{ color: '#0D0D0D' }}>
+                  <p className="text-sm font-['DM_Sans'] font-light text-center leading-relaxed" style={{ color: '#1A1510' }}>
                     {segment.text}
                   </p>
                 </div>
@@ -406,7 +408,7 @@ export function VoiceDumpScreen() {
           transition={{ delay: 1 }}
           className="flex justify-center mt-12"
         >
-          <p className="text-sm font-['Cormorant_Garamond'] italic font-light" style={{ color: '#6B6B6B' }}>
+          <p className="text-sm font-['Cormorant_Garamond'] italic font-light" style={{ color: 'rgba(26,21,16,0.45)' }}>
             Walk around. Best ideas come when you move.
           </p>
         </motion.div>

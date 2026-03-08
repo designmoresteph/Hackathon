@@ -26,12 +26,12 @@
 
 - [x] **PERS-01**: Entries and agent outputs persist in localStorage across sessions
 - [x] **PERS-02**: LinkerAgent can access past entries to detect patterns over time
-- [ ] **PERS-03**: Dashboard displays historical data from stored entries
+- [x] **PERS-03**: Dashboard displays historical data from stored entries
 
 ### Dashboard
 
 - [x] **DASH-01**: AI agent widgets display real outputs from the most recent pipeline run
-- [ ] **DASH-02**: Dashboard workspace cards reflect actual stored data (not hardcoded mocks)
+- [x] **DASH-02**: Dashboard workspace cards reflect actual stored data (not hardcoded mocks)
 
 ## v2 Requirements
 
@@ -77,9 +77,9 @@
 | AGENT-07 | Phase 2 | Complete |
 | PERS-01 | Phase 1 | Complete |
 | PERS-02 | Phase 2 | Complete |
-| PERS-03 | Phase 3 | Pending |
+| PERS-03 | Phase 3 | Complete |
 | DASH-01 | Phase 3 | Complete |
-| DASH-02 | Phase 3 | Pending |
+| DASH-02 | Phase 3 | Complete |
 
 **Coverage:**
 - v1 requirements: 16 total
