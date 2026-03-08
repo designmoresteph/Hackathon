@@ -5,118 +5,108 @@
 ## Languages
 
 **Primary:**
-- TypeScript / TSX - All application code in `src/`
+- TypeScript (.tsx, .ts) - All application code
+- CSS - Styling via Tailwind CSS and custom theme variables
 
 **Secondary:**
-- CSS - Styling via Tailwind CSS and custom CSS variables in `src/styles/`
+- HTML - Single `index.html` entry point
 
 ## Runtime
 
 **Environment:**
-- Node.js (no `.nvmrc` or version constraint detected)
+- Node.js (no `.nvmrc` or version pinning detected)
+- Browser-based SPA (Vite dev server for development)
 
 **Package Manager:**
 - pnpm (configured via `pnpm.overrides` in `package.json`)
-- Lockfile: Not committed (no `pnpm-lock.yaml` in repo)
+- Lockfile: missing (no `pnpm-lock.yaml`, `package-lock.json`, or `yarn.lock` detected)
 
 ## Frameworks
 
 **Core:**
-- React `18.3.1` - UI framework (listed as peerDependency in `package.json`)
-- React Router `7.13.0` - Client-side routing via `createBrowserRouter` in `src/app/routes.tsx`
-- Vite `6.3.5` - Build tool and dev server, configured in `vite.config.ts`
+- React 18.3.1 (peer dependency) - UI framework
+- React Router 7.13.0 (`react-router`) - Client-side routing via `createBrowserRouter`
+- Vite 6.3.5 - Dev server and build tool
 
 **UI Component Libraries:**
-- MUI (Material UI) `7.3.5` - `@mui/material` and `@mui/icons-material` in `package.json`
-- Radix UI Primitives - Extensive set of headless components (accordion, dialog, dropdown-menu, tabs, etc.) wrapped in `src/app/components/ui/`
-- shadcn/ui pattern - Radix primitives + Tailwind styling in `src/app/components/ui/`
+- Radix UI (extensive) - Headless component primitives (accordion, dialog, dropdown, tabs, etc.)
+- MUI Material 7.3.5 (`@mui/material`, `@mui/icons-material`) - Material Design components
+- shadcn/ui pattern - Pre-built components in `src/app/components/ui/` using Radix + CVA + Tailwind
 
 **Styling:**
-- Tailwind CSS `4.1.12` - Utility-first CSS via `@tailwindcss/vite` plugin
-- tw-animate-css `1.3.8` - Animation utilities imported in `src/styles/tailwind.css`
-- Emotion `11.14.x` - CSS-in-JS (`@emotion/react`, `@emotion/styled`) for MUI compatibility
-
-**Animation:**
-- Motion (Framer Motion) `12.23.24` - Page and element animations, imported as `motion/react`
-
-**Testing:**
-- Not detected - No test framework, config, or test files present
+- Tailwind CSS 4.1.12 - Utility-first CSS framework (v4 with `@tailwindcss/vite` plugin)
+- tw-animate-css 1.3.8 - Tailwind animation utilities
+- Emotion (`@emotion/react` 11.14.0, `@emotion/styled` 11.14.1) - CSS-in-JS for MUI
 
 **Build/Dev:**
-- Vite `6.3.5` - Dev server and production builds
-- `@vitejs/plugin-react` `4.7.0` - React Fast Refresh and JSX transform
-- `@tailwindcss/vite` `4.1.12` - Tailwind CSS integration
-- PostCSS - Minimal config in `postcss.config.mjs` (Tailwind handles plugins)
+- Vite 6.3.5 - Bundler and dev server
+- `@vitejs/plugin-react` 4.7.0 - React Fast Refresh and JSX transform
+- `@tailwindcss/vite` 4.1.12 - Tailwind CSS Vite integration
 
 ## Key Dependencies
 
 **Critical:**
-- `react` `18.3.1` - Core UI framework
-- `react-router` `7.13.0` - All navigation and routing in `src/app/routes.tsx`
-- `motion` `12.23.24` - Animations used across all screen components
+- `react-router` 7.13.0 - All navigation and screen routing (`src/app/routes.tsx`)
+- `motion` 12.23.24 - Page animations and transitions (Framer Motion successor)
+- `lucide-react` 0.487.0 - Icon library used across screens
+- `class-variance-authority` 0.7.1 - Component variant management for UI primitives
+- `clsx` 2.1.1 + `tailwind-merge` 3.2.0 - Conditional class name composition (via `cn()` utility)
 
-**UI Utilities:**
-- `lucide-react` `0.487.0` - Icon library used in all screens (Mic, Type, ImageIcon, Calendar, etc.)
-- `class-variance-authority` `0.7.1` - Component variant management in UI components
-- `clsx` `2.1.1` - Conditional className composition
-- `tailwind-merge` `3.2.0` - Tailwind class deduplication (used via `cn()` in `src/app/components/ui/utils.ts`)
+**UI/UX:**
+- `react-dnd` 16.0.1 + `react-dnd-html5-backend` 16.0.1 - Drag and drop functionality (wrapped at App root)
+- `recharts` 2.15.2 - Data visualization / charts
+- `react-day-picker` 8.10.1 - Calendar/date picker
+- `embla-carousel-react` 8.6.0 - Carousel component
+- `react-resizable-panels` 2.1.7 - Resizable panel layouts
+- `react-responsive-masonry` 2.7.1 - Masonry grid layout
+- `react-slick` 0.31.0 - Slider/carousel
+- `sonner` 2.0.3 - Toast notifications
+- `vaul` 1.1.2 - Drawer component
+- `cmdk` 1.1.1 - Command palette
+- `react-hook-form` 7.55.0 - Form state management
+- `input-otp` 1.4.2 - OTP input component
+- `next-themes` 0.4.6 - Dark/light theme switching
+- `date-fns` 3.6.0 - Date utility functions
 
-**Feature Libraries:**
-- `react-dnd` `16.0.1` + `react-dnd-html5-backend` `16.0.1` - Drag and drop, wrapped at app root in `src/app/App.tsx`
-- `react-hook-form` `7.55.0` - Form state management
-- `recharts` `2.15.2` - Chart/data visualization
-- `date-fns` `3.6.0` - Date utilities
-- `react-day-picker` `8.10.1` - Calendar date picker in `src/app/components/ui/calendar.tsx`
-- `embla-carousel-react` `8.6.0` - Carousel in `src/app/components/ui/carousel.tsx`
-- `react-resizable-panels` `2.1.7` - Resizable panel layouts
-- `react-responsive-masonry` `2.7.1` - Masonry grid layouts
-- `react-slick` `0.31.0` - Slider/carousel
-- `sonner` `2.0.3` - Toast notifications in `src/app/components/ui/sonner.tsx`
-- `vaul` `1.1.2` - Drawer component in `src/app/components/ui/drawer.tsx`
-- `cmdk` `1.1.1` - Command palette in `src/app/components/ui/command.tsx`
-- `input-otp` `1.4.2` - OTP input in `src/app/components/ui/input-otp.tsx`
-- `next-themes` `0.4.6` - Theme switching (light/dark)
-- `@popperjs/core` `2.11.8` + `react-popper` `2.3.0` - Tooltip/popover positioning
+**Infrastructure:**
+- `@popperjs/core` 2.11.8 + `react-popper` 2.3.0 - Tooltip/popover positioning
 
 ## Configuration
 
-**Path Aliases:**
-- `@` maps to `./src` directory, configured in `vite.config.ts`
-
-**Assets:**
-- SVG and CSV files configured for raw imports in `vite.config.ts` via `assetsInclude`
+**Environment:**
+- No `.env` files detected
+- No environment variables used in source code
+- No `process.env` or `import.meta.env` references
 
 **Build:**
-- `vite.config.ts` - Vite configuration with React and Tailwind plugins
-- `postcss.config.mjs` - Empty PostCSS config (Tailwind v4 handles its own setup)
+- `vite.config.ts` - Vite configuration with React plugin, Tailwind plugin, and `@` path alias to `./src`
+- `postcss.config.mjs` - Empty (Tailwind v4 handles PostCSS automatically)
+- `package.json` - ES modules (`"type": "module"`)
 
-**Fonts:**
-- Google Fonts loaded via CSS import in `src/styles/fonts.css`
-- Families: Playfair Display, Lora, DM Sans, DM Mono, Cormorant Garamond, Outfit
+**Styling/Theme:**
+- `src/styles/index.css` - CSS entry point (imports fonts, tailwind, theme)
+- `src/styles/tailwind.css` - Tailwind v4 source configuration
+- `src/styles/theme.css` - Custom CSS variables for "mymind" design system (light + dark themes)
+- `src/styles/fonts.css` - Google Fonts import (Playfair Display, Lora, DM Sans, DM Mono, Cormorant Garamond, Outfit)
 
-**Theming:**
-- CSS custom properties defined in `src/styles/theme.css`
-- Design system colors: off-white (#F7F5F0), black (#0D0D0D), yellow (#F5E642), peach (#F5C4A1), sage (#C8D5B0), blush (#F0D5D0)
-- Dark mode variant defined but not actively used in screens
-- Tailwind theme integration via `@theme inline` block in `src/styles/theme.css`
-
-## Scripts
-
-```bash
-pnpm dev     # Start Vite dev server
-pnpm build   # Production build via Vite
-```
+**Path Aliases:**
+- `@` maps to `./src` (configured in `vite.config.ts`)
 
 ## Platform Requirements
 
 **Development:**
 - Node.js with pnpm
-- No TypeScript config file detected (no `tsconfig.json`) - Vite handles TS transpilation
+- `pnpm dev` starts Vite dev server
+- `pnpm build` produces production build
 
 **Production:**
-- Static SPA - outputs to `dist/` via `vite build`
+- Static SPA - serves `index.html` with bundled JS/CSS
 - No server-side rendering
-- Can be deployed to any static hosting (Netlify, Vercel, S3, etc.)
+- No backend required
+
+## Origin
+
+This project was generated by **Figma Make** (`@figma/my-make-file` package name). It scaffolds a React + Vite + Tailwind app from Figma designs with shadcn/ui component patterns.
 
 ---
 

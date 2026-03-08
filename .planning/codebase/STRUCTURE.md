@@ -7,192 +7,183 @@
 ```
 illustrious-brook/
 ├── .planning/              # Planning and analysis documents
-│   └── codebase/           # Codebase mapping documents
-├── guidelines/             # AI/Figma Make guidelines
-│   └── Guidelines.md       # Custom guidelines (template, mostly empty)
-├── src/                    # All application source code
-│   ├── app/                # Application logic
-│   │   ├── components/     # Reusable components
+├── guidelines/             # AI guidelines for Figma Make
+│   └── Guidelines.md       # Placeholder for design/coding rules
+├── src/
+│   ├── app/
+│   │   ├── components/
 │   │   │   ├── figma/      # Figma Make utility components
-│   │   │   └── ui/         # shadcn/ui component library (45+ components)
-│   │   ├── screens/        # Full-page screen components (8 screens)
-│   │   ├── App.tsx         # Root app component with providers
-│   │   └── routes.tsx      # Client-side route definitions
-│   ├── imports/            # Design documentation imported from Figma
-│   │   ├── screen-flow.md  # Screen-by-screen UX specification
+│   │   │   │   └── ImageWithFallback.tsx
+│   │   │   ├── ui/         # shadcn/ui primitives (48 files)
+│   │   │   │   ├── button.tsx
+│   │   │   │   ├── card.tsx
+│   │   │   │   ├── input.tsx
+│   │   │   │   ├── textarea.tsx
+│   │   │   │   ├── utils.ts        # cn() class merge utility
+│   │   │   │   ├── use-mobile.ts   # useIsMobile() hook
+│   │   │   │   └── ... (45 more)
+│   │   │   └── AnimatedGradient.tsx # Animated background component
+│   │   ├── screens/        # Full-page screen components
+│   │   │   ├── WelcomeScreen.tsx
+│   │   │   ├── VoiceDumpScreen.tsx
+│   │   │   ├── TextDumpScreen.tsx
+│   │   │   ├── ClusteringScreen.tsx
+│   │   │   ├── DashboardScreen.tsx
+│   │   │   ├── SearchScreen.tsx
+│   │   │   ├── SynthesisScreen.tsx
+│   │   │   └── ProjectScreen.tsx
+│   │   ├── App.tsx          # Root component (providers)
+│   │   └── routes.tsx       # Route definitions
+│   ├── assets/              # Static assets (images)
+│   │   └── 3c7af6a14225d1ee2a77d186872f69245c52483a.png
+│   ├── imports/             # Figma Make design reference docs
+│   │   ├── screen-flow.md
 │   │   ├── starter_design_system.md
 │   │   └── starter_design_system-1.md
-│   ├── styles/             # Global CSS and theme
-│   │   ├── fonts.css       # Google Fonts imports
-│   │   ├── index.css       # CSS entry point (imports all others)
-│   │   ├── tailwind.css    # Tailwind v4 configuration
-│   │   └── theme.css       # Design system CSS custom properties
-│   └── main.tsx            # Application entry point
-├── index.html              # HTML shell (Vite entry)
-├── package.json            # Dependencies and scripts
-├── postcss.config.mjs      # PostCSS config (empty, Tailwind v4 handles it)
-├── vite.config.ts          # Vite build config with path aliases
-├── ATTRIBUTIONS.md         # Third-party attributions
-└── README.md               # Project readme
+│   ├── styles/
+│   │   ├── index.css        # CSS entry (imports others)
+│   │   ├── fonts.css        # Google Fonts imports
+│   │   ├── tailwind.css     # Tailwind v4 source config
+│   │   └── theme.css        # Design tokens (CSS custom properties)
+│   └── main.tsx             # App bootstrap / React root mount
+├── index.html               # HTML shell
+├── package.json             # Dependencies and scripts
+├── postcss.config.mjs       # PostCSS config (empty, Tailwind handles it)
+├── vite.config.ts           # Vite build config with path aliases
+├── ATTRIBUTIONS.md          # Asset attributions
+└── README.md                # Project readme
 ```
 
 ## Directory Purposes
 
 **`src/app/screens/`:**
-- Purpose: Each file is a full-page view in the user flow
-- Contains: 8 screen components, one per file
-- Key files:
-  - `WelcomeScreen.tsx`: Landing page with name input and mode selection
-  - `VoiceDumpScreen.tsx`: Voice recording simulation with timer and transcript
-  - `TextDumpScreen.tsx`: Free-form text input
-  - `ClusteringScreen.tsx`: Animated word clustering and connection visualization
-  - `DashboardScreen.tsx`: Widget-based dashboard with cards
-  - `SearchScreen.tsx`: Sticky note search with timeline view
-  - `SynthesisScreen.tsx`: Animation-driven note synthesis
-  - `ProjectScreen.tsx`: Three-panel project workspace (outline, editor, widgets)
+- Purpose: Full-page view components, one per route
+- Contains: 8 screen components representing the user journey flow
+- Key files: `WelcomeScreen.tsx` (entry), `DashboardScreen.tsx` (hub), `ProjectScreen.tsx` (final destination)
 
 **`src/app/components/ui/`:**
-- Purpose: shadcn/ui component library - pre-built, accessible UI primitives
-- Contains: 45+ component files plus utilities
-- Key files:
-  - `button.tsx`: Button with variants (default, destructive, outline, secondary, ghost, link) and sizes
-  - `card.tsx`: Card layout components (Card, CardHeader, CardTitle, CardContent, etc.)
-  - `input.tsx`: Text input component
-  - `textarea.tsx`: Multi-line text input
-  - `utils.ts`: `cn()` utility combining `clsx` and `tailwind-merge`
-  - `use-mobile.ts`: `useIsMobile()` hook (breakpoint at 768px)
+- Purpose: shadcn/ui component library -- pre-built, accessible UI primitives
+- Contains: 48 component files wrapping Radix UI primitives with Tailwind styles
+- Key files: `button.tsx`, `card.tsx`, `input.tsx`, `textarea.tsx`, `utils.ts` (cn helper), `use-mobile.ts` (responsive hook)
+
+**`src/app/components/`:**
+- Purpose: App-specific reusable components (not UI primitives)
+- Contains: `AnimatedGradient.tsx` (welcome screen background), `figma/ImageWithFallback.tsx` (error-safe image)
 
 **`src/app/components/figma/`:**
-- Purpose: Figma Make-specific utility components
-- Contains: `ImageWithFallback.tsx` - image with error state fallback
+- Purpose: Utility components generated/used by Figma Make
+- Contains: `ImageWithFallback.tsx`
 
 **`src/styles/`:**
-- Purpose: Global styling foundation
-- Contains: CSS files for theme tokens, fonts, and Tailwind setup
-- Key files:
-  - `theme.css`: Design system CSS custom properties (colors, typography, spacing) with light/dark mode support
-  - `fonts.css`: Google Fonts import for Playfair Display, Lora, DM Sans, DM Mono, Cormorant Garamond, Outfit
-  - `tailwind.css`: Tailwind v4 setup with `tw-animate-css` plugin
-  - `index.css`: Aggregates all style imports
+- Purpose: Global styles, design tokens, Tailwind configuration
+- Contains: CSS files imported by `index.css` entry point
+- Key files: `theme.css` (all design tokens and CSS variables), `fonts.css` (Google Fonts CDN imports)
 
 **`src/imports/`:**
-- Purpose: Design documentation and specifications imported from Figma
-- Contains: Screen flow spec and design system documentation
-- Note: These are reference docs, not consumed by application code
+- Purpose: Reference documentation imported from Figma Make (design specs, screen flow)
+- Contains: Markdown files describing the design system and screen-by-screen flow
+- Key files: `screen-flow.md` (detailed UX flow for all 7 screens)
+
+**`src/assets/`:**
+- Purpose: Static image assets referenced by components
+- Contains: Cloud image PNG used in VoiceDumpScreen and ClusteringScreen
+
+**`guidelines/`:**
+- Purpose: AI coding guidelines for Figma Make generation
+- Contains: `Guidelines.md` (currently a placeholder template)
 
 ## Key File Locations
 
 **Entry Points:**
-- `index.html`: HTML shell, loads `src/main.tsx`
-- `src/main.tsx`: Creates React root, renders `<App />`, imports global styles
+- `index.html`: HTML shell with `<div id="root">` mount point
+- `src/main.tsx`: React root creation, global CSS import
 - `src/app/App.tsx`: Root component with DndProvider and RouterProvider
-- `src/app/routes.tsx`: All route definitions
+- `src/app/routes.tsx`: All route definitions (8 routes)
 
 **Configuration:**
 - `vite.config.ts`: Vite config with React plugin, Tailwind plugin, `@` path alias to `src/`
-- `package.json`: Dependencies, scripts (`dev`, `build`)
-- `postcss.config.mjs`: Empty (Tailwind v4 handles PostCSS internally)
+- `postcss.config.mjs`: Empty PostCSS config (Tailwind v4 handles plugins)
+- `package.json`: Dependencies, `dev` and `build` scripts
 
 **Core Logic:**
-- `src/app/screens/*.tsx`: All application logic lives in screen components
-- `src/app/routes.tsx`: Route mapping
+- `src/app/screens/ClusteringScreen.tsx`: Most complex screen -- drag-and-drop clusters, SVG connections, word animations
+- `src/app/screens/DashboardScreen.tsx`: Central hub with AI widget interactions (simulated)
+- `src/app/screens/SearchScreen.tsx`: Multi-phase animated search results
+- `src/app/screens/SynthesisScreen.tsx`: Collapse animation sequence
 
 **Styling:**
-- `src/styles/theme.css`: All design tokens and CSS variables
-- `src/styles/fonts.css`: Font loading
-- `src/styles/tailwind.css`: Tailwind v4 source configuration
+- `src/styles/theme.css`: All CSS custom properties (design tokens, colors, radii, Tailwind compatibility vars)
+- `src/styles/fonts.css`: Google Fonts CDN imports (Playfair Display, Lora, DM Sans, DM Mono, Cormorant Garamond, Outfit)
+- `src/styles/tailwind.css`: Tailwind v4 source configuration with `tw-animate-css`
+
+**Design Reference:**
+- `src/imports/screen-flow.md`: Screen-by-screen UX specification
+- `src/imports/starter_design_system.md`: Design system tokens and rules
 
 ## Naming Conventions
 
 **Files:**
-- Screen components: `PascalCase` + `Screen` suffix (e.g., `WelcomeScreen.tsx`, `DashboardScreen.tsx`)
-- UI components: `kebab-case.tsx` (e.g., `button.tsx`, `alert-dialog.tsx`, `hover-card.tsx`)
-- Hooks: `use-kebab-case.ts` (e.g., `use-mobile.ts`)
-- Utility files: `kebab-case.ts` (e.g., `utils.ts`)
-- CSS files: `kebab-case.css` (e.g., `theme.css`, `fonts.css`)
+- Screen components: `PascalCase` with `Screen` suffix: `WelcomeScreen.tsx`, `DashboardScreen.tsx`
+- UI primitives: `kebab-case`: `button.tsx`, `alert-dialog.tsx`, `toggle-group.tsx`
+- Custom components: `PascalCase`: `AnimatedGradient.tsx`, `ImageWithFallback.tsx`
+- Hooks: `use-` prefix, kebab-case: `use-mobile.ts`
+- Utilities: `camelCase`: `utils.ts`
+- CSS files: `kebab-case`: `index.css`, `theme.css`, `fonts.css`
 
 **Directories:**
-- All lowercase, singular or descriptive (e.g., `screens`, `components`, `styles`, `imports`)
+- Lowercase: `screens/`, `components/`, `styles/`, `assets/`, `imports/`
+- Nested grouping: `components/ui/`, `components/figma/`
 
 **Exports:**
-- Screen components: Named export functions (e.g., `export function WelcomeScreen()`)
-- UI components: Named exports (e.g., `export { Button, buttonVariants }`)
-- No default exports except `src/app/App.tsx`
+- Screen components: Named exports (`export function WelcomeScreen`)
+- UI primitives: Named exports (`export function Button`, `export function Card`)
+- Custom components: Named exports (`export function AnimatedGradient`)
+- Utilities: Named exports (`export function cn`)
 
 ## Where to Add New Code
 
 **New Screen:**
-1. Create `src/app/screens/YourScreen.tsx` with named export
-2. Add route entry in `src/app/routes.tsx`
-3. Follow pattern: use `useNavigate()` for navigation, `motion` for animations, local `useState` for state
+- Create file: `src/app/screens/{Name}Screen.tsx`
+- Add route: `src/app/routes.tsx` -- add a new object to the router array
+- Pattern: Named export function component, use `useNavigate()` for transitions, `motion` for animations
 
-**New UI Component (custom):**
-- Place in `src/app/components/` (not in `ui/` which is shadcn-managed)
-- Use `cn()` from `src/app/components/ui/utils.ts` for class merging
+**New Reusable Component:**
+- App-specific component: `src/app/components/{ComponentName}.tsx`
+- UI primitive (shadcn/ui style): `src/app/components/ui/{component-name}.tsx`
 
-**New shadcn/ui Component:**
-- Place in `src/app/components/ui/`
-- Follow existing shadcn/ui patterns (Radix primitives, `cva` variants, `cn()` utility)
-
-**New Shared Hook:**
-- Place in `src/app/components/ui/` following `use-*.ts` naming (current convention)
+**New Hook:**
+- Place in: `src/app/components/ui/use-{name}.ts` (following existing pattern)
 - Or create `src/app/hooks/` directory for app-specific hooks
 
-**New Styles:**
-- Add CSS custom properties to `src/styles/theme.css`
-- Import new CSS files from `src/styles/index.css`
+**New Style/Token:**
+- Design tokens: Add CSS custom properties to `src/styles/theme.css` under `:root`
+- New font: Add `@import` to `src/styles/fonts.css`
 
-**New Utility Functions:**
-- Add to `src/app/components/ui/utils.ts` for component utilities
-- Or create new file in appropriate location
+**New Static Asset:**
+- Place in: `src/assets/`
+- Import using: Vite asset import or `figma:asset/` prefix for Figma-exported assets
+
+**Utilities:**
+- Class merging: Use `cn()` from `src/app/components/ui/utils.ts`
+- New shared utilities: Create `src/app/lib/` or `src/app/utils/` directory
 
 ## Special Directories
 
 **`src/imports/`:**
-- Purpose: Design documentation and specifications from Figma
-- Generated: Yes (from Figma Make)
+- Purpose: Figma Make design reference documents (not code)
+- Generated: Yes, by Figma Make
 - Committed: Yes
-- Note: Reference only; not imported by application code
 
 **`src/app/components/ui/`:**
 - Purpose: shadcn/ui component library
-- Generated: Yes (via shadcn CLI or Figma Make)
+- Generated: Yes, via shadcn/ui CLI or Figma Make
 - Committed: Yes
-- Note: These are "owned" copies - they can be modified, but follow shadcn patterns
+- Note: Contains 48 component files; many are likely unused by current screens but available for future use
 
-**`.planning/`:**
-- Purpose: Project planning and analysis documents
-- Generated: By tooling
-- Committed: Depends on workflow
-
-## Path Aliases
-
-**`@` -> `src/`:**
-- Configured in `vite.config.ts` via `resolve.alias`
-- Use `@/app/components/ui/button` instead of relative paths from deeply nested files
-- Screens currently use relative imports (e.g., `../components/ui/input`)
-
-## Design System Color Palette
-
-Defined in `src/styles/theme.css` as CSS custom properties:
-- `--off-white: #F7F5F0` (primary background)
-- `--cream: #F2EFE9` (secondary background)
-- `--black: #0D0D0D` (primary text)
-- `--dark: #1A1A1A` (dark backgrounds like VoiceDump/Synthesis)
-- `--yellow: #F5E642` (primary CTA/accent)
-- `--peach: #F5C4A1` (warm accent)
-- `--sage: #C8D5B0` (cool accent)
-- `--blush: #F0D5D0` (soft accent)
-
-## Typography
-
-Six Google Fonts loaded in `src/styles/fonts.css`:
-- **Playfair Display**: Large headings (hero text, page titles)
-- **Lora**: Section headings, card titles
-- **DM Sans**: Body text, descriptions (weight 300 for light feel)
-- **DM Mono**: Monospace (available but not currently used in screens)
-- **Cormorant Garamond**: Italic hint text, atmospheric quotes
-- **Outfit**: Labels, buttons, metadata (uppercase tracking)
+**`src/assets/`:**
+- Purpose: Static image assets exported from Figma
+- Generated: Yes, from Figma
+- Committed: Yes
 
 ---
 

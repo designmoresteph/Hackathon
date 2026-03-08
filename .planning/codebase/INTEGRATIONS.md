@@ -4,15 +4,15 @@
 
 ## APIs & External Services
 
-**None detected.** This is a frontend-only prototype with no API calls, no `fetch()` usage, and no HTTP client libraries (axios, ky, etc.). All data displayed in screens is hardcoded/static.
+**None detected.** This is a pure frontend SPA with no API calls, no `fetch()` usage, no HTTP client libraries, and no environment variable references.
 
 ## Data Storage
 
 **Databases:**
-- None - No database connection or ORM detected
+- None - No database connections or ORM usage
 
 **File Storage:**
-- Local filesystem only (SVG and CSV assets via Vite raw imports)
+- Local filesystem only (static assets in `src/assets/`)
 
 **Caching:**
 - None
@@ -20,7 +20,7 @@
 ## Authentication & Identity
 
 **Auth Provider:**
-- None - No authentication system detected
+- None - No authentication system implemented
 
 ## Monitoring & Observability
 
@@ -33,7 +33,7 @@
 ## CI/CD & Deployment
 
 **Hosting:**
-- Not configured - Static SPA, deployable to any static host
+- Not configured - static SPA, deployable to any static host (Vercel, Netlify, S3, etc.)
 
 **CI Pipeline:**
 - None detected (no `.github/workflows/`, no CI config files)
@@ -41,16 +41,17 @@
 ## Environment Configuration
 
 **Required env vars:**
-- None - No `.env` files present, no `import.meta.env` usage detected
+- None
 
 **Secrets location:**
-- Not applicable
+- No secrets required
 
-## External Font Service
+## External Resources
 
-**Google Fonts:**
-- Loaded via CSS `@import url()` in `src/styles/fonts.css`
-- Families: Playfair Display, Lora, DM Sans, DM Mono, Cormorant Garamond, Outfit
+**Google Fonts (CDN):**
+- Loaded via CSS `@import` in `src/styles/fonts.css`
+- Fonts: Playfair Display, Lora, DM Sans, DM Mono, Cormorant Garamond, Outfit
+- URL: `https://fonts.googleapis.com/css2?family=...`
 - This is the only external network dependency
 
 ## Webhooks & Callbacks
@@ -61,19 +62,19 @@
 **Outgoing:**
 - None
 
-## Integration Notes
+## Integration Opportunities
 
-This codebase is a Figma Make-generated frontend prototype. It contains:
-- Static screen mockups with hardcoded data
-- No backend connectivity
-- No state persistence between sessions
-- The `package.json` name `@figma/my-make-file` confirms this is generated from Figma's Make tool
+This codebase is currently a static UI prototype with no backend connectivity. Future integrations would likely need:
 
-Any future backend integration would need to add:
-- An HTTP client (fetch wrapper or axios)
-- Environment variable configuration for API endpoints
-- State management beyond React's `useState` (e.g., React Query, Zustand)
-- Authentication flow
+1. **Backend API** - The screens (Voice Dump, Text Dump, Clustering, Synthesis, Search, Dashboard) suggest a research/note-taking tool that will need:
+   - Voice transcription service (for `/voice` screen)
+   - Text storage/retrieval API (for `/text` screen)
+   - Clustering/AI analysis endpoint (for `/cluster` screen)
+   - Search API (for `/search` screen)
+
+2. **State Management** - Currently no global state beyond React Router. Adding a backend will require state management (React Context, Zustand, or similar).
+
+3. **Authentication** - The Welcome screen asks "Who are you today?" with a name input, but this is not persisted. A real auth system would be needed for multi-user support.
 
 ---
 

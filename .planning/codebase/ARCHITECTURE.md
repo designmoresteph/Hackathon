@@ -4,132 +4,135 @@
 
 ## Pattern Overview
 
-**Overall:** Single-Page Application (SPA) with client-side routing and screen-based navigation
+**Overall:** Single-page application (SPA) with client-side routing, screen-based navigation flow, and no backend/API layer. This is a Figma Make-generated prototype with all data hardcoded in components.
 
 **Key Characteristics:**
-- Figma Make-generated React prototype (no backend, no API calls, all data is hardcoded/mocked)
-- Flat screen-based architecture with no shared state between screens
-- Linear user flow: Welcome -> Input (Voice/Text) -> Clustering -> Dashboard -> Search -> Synthesis -> Project
-- Heavy use of Framer Motion animations as a core UX feature
-- shadcn/ui component library with Radix UI primitives
+- Flat screen-based architecture with no shared layout or nested routes
+- All state is local to individual screen components (no global state management)
+- No backend, no API calls, no persistent data storage -- all content is hardcoded/mocked
+- Heavy use of animation (Framer Motion) as a core UX mechanism, not just decoration
+- UI primitive layer from shadcn/ui (Radix-based) with Tailwind CSS styling
+- Drag-and-drop interaction via react-dnd on the clustering screen
 
 ## Layers
 
-**Entry Layer:**
-- Purpose: Bootstrap React app, mount root component
-- Location: `src/main.tsx`, `index.html`
-- Contains: React DOM render call, global CSS imports
-- Depends on: `src/app/App.tsx`, `src/styles/index.css`
+**Entry / Bootstrap:**
+- Purpose: Mount the React app and set up global providers
+- Location: `src/main.tsx`, `src/app/App.tsx`
+- Contains: Root render, DndProvider (drag-and-drop context), RouterProvider
+- Depends on: react-router, react-dnd
+- Used by: Browser (via `index.html`)
 
-**App Shell:**
-- Purpose: Provide top-level providers (DnD, Router)
-- Location: `src/app/App.tsx`
-- Contains: `DndProvider` wrapping `RouterProvider`
-- Depends on: `src/app/routes.tsx`, `react-dnd`, `react-router`
-
-**Routing Layer:**
+**Routing:**
 - Purpose: Map URL paths to screen components
 - Location: `src/app/routes.tsx`
 - Contains: Flat route definitions using `createBrowserRouter`
-- Depends on: All screen components in `src/app/screens/`
-- Pattern: No nested routes, no layouts, no route guards
+- Depends on: All screen components
+- Used by: `src/app/App.tsx` via `RouterProvider`
 
-**Screen Layer:**
-- Purpose: Full-page views representing each step of the user flow
+**Screens (Pages):**
+- Purpose: Full-page views representing each step in the user flow
 - Location: `src/app/screens/`
-- Contains: 8 screen components, each self-contained with local state only
-- Depends on: UI components, `react-router` navigation, `motion/react`
+- Contains: 8 screen components, each self-contained with local state and hardcoded data
+- Depends on: UI components (`src/app/components/ui/`), custom components (`src/app/components/`), lucide-react icons, motion
 - Used by: Router
 
-**UI Component Layer:**
-- Purpose: Reusable presentational primitives (shadcn/ui pattern)
+**UI Primitives:**
+- Purpose: Reusable, unstyled/low-styled building blocks (shadcn/ui pattern)
 - Location: `src/app/components/ui/`
-- Contains: 45+ UI components (Button, Card, Input, Textarea, etc.)
-- Depends on: Radix UI primitives, `class-variance-authority`, `tailwind-merge`
+- Contains: 48 component files (accordion, button, card, dialog, input, textarea, etc.)
+- Depends on: Radix UI primitives, `clsx`, `tailwind-merge`, class-variance-authority
 - Used by: Screen components
 
-**Figma Component Layer:**
-- Purpose: Figma Make-specific utility components
-- Location: `src/app/components/figma/`
-- Contains: `ImageWithFallback.tsx` - image component with error fallback
+**Custom Components:**
+- Purpose: App-specific reusable components
+- Location: `src/app/components/`
+- Contains: `AnimatedGradient.tsx` (animated background), `figma/ImageWithFallback.tsx` (image error handling)
+- Depends on: motion (Framer Motion)
+- Used by: Screen components (WelcomeScreen uses AnimatedGradient)
 
-**Styling Layer:**
-- Purpose: Global styles, theme variables, font loading, Tailwind configuration
+**Styles:**
+- Purpose: Global CSS, design tokens, font imports, Tailwind configuration
 - Location: `src/styles/`
-- Contains: CSS custom properties for design system, Google Fonts imports, Tailwind v4 setup
+- Contains: `index.css` (entry), `fonts.css` (Google Fonts), `tailwind.css` (Tailwind source config), `theme.css` (CSS custom properties / design tokens)
+- Depends on: Tailwind CSS v4, Google Fonts CDN
+- Used by: All components via Tailwind classes and CSS variables
 
 ## Data Flow
 
-**User Navigation Flow:**
+**User Journey (Primary Flow):**
 
-1. User lands on `WelcomeScreen` (`/`) and enters name, chooses input mode
-2. Navigate to `VoiceDumpScreen` (`/voice`) or `TextDumpScreen` (`/text`)
-3. Input completes -> navigate to `ClusteringScreen` (`/cluster`)
-4. Clustering animation plays -> user clicks "Create My Dashboard" -> `DashboardScreen` (`/dashboard`)
-5. Search from dashboard -> `SearchScreen` (`/search`)
-6. Click "Synthesize Into Project" -> `SynthesisScreen` (`/synthesis`)
-7. Synthesis animation -> auto-navigate to `ProjectScreen` (`/project`)
+1. User lands on `WelcomeScreen` (`/`) -- enters name, chooses input mode (voice/type/drop)
+2. Navigates to `VoiceDumpScreen` (`/voice`) or `TextDumpScreen` (`/text`) -- captures thoughts
+3. Auto-navigates to `ClusteringScreen` (`/cluster`) -- words animate in, then cluster into draggable groups
+4. User clicks "Create My Dashboard" -> `DashboardScreen` (`/dashboard`)
+5. User searches "blog" -> `SearchScreen` (`/search`) -- sticky notes animate, form timeline
+6. User clicks "Synthesize" -> `SynthesisScreen` (`/synthesis`) -- collapse animation
+7. Auto-navigates to `ProjectScreen` (`/project`) -- final writing workspace
 
 **State Management:**
-- No global state management (no Redux, Zustand, Context, etc.)
-- Each screen uses local `useState` hooks independently
-- Navigation state passed via URL only (no route params, no query strings, no location state)
-- All "data" (transcript lines, cluster content, sticky notes, project outline) is hardcoded within each screen component
-
-**Animation as Data Flow:**
-- Screens use timed `useEffect` sequences to simulate processing (e.g., `VoiceDumpScreen` timer, `ClusteringScreen` word animation, `SynthesisScreen` collapse sequence)
-- Phase-based state machines drive animation transitions within screens (e.g., `SearchScreen` phases: "flying" -> "gathering" -> "timeline")
+- No global state store (no Redux, Zustand, Context, etc.)
+- Each screen manages its own state via `useState` and `useEffect`
+- Navigation between screens uses `useNavigate()` from react-router
+- No data is passed between screens -- each screen has its own hardcoded content
+- Timer state in VoiceDumpScreen triggers auto-navigation on expiry
+- Phase-based state machines in SearchScreen (`"flying" | "gathering" | "timeline"`) and SynthesisScreen (`"gathering" | "collapsing" | "flash" | "document"`) drive multi-step animations
 
 ## Key Abstractions
 
 **Screen Components:**
-- Purpose: Represent a full-page step in the user journey
-- Examples: `src/app/screens/WelcomeScreen.tsx`, `src/app/screens/ClusteringScreen.tsx`
-- Pattern: Named export function component, local state via `useState`, navigation via `useNavigate()`, motion animations
+- Purpose: Each screen is a self-contained page with its own data, state, and animation logic
+- Examples: `src/app/screens/WelcomeScreen.tsx`, `src/app/screens/ClusteringScreen.tsx`, `src/app/screens/DashboardScreen.tsx`
+- Pattern: Named export function component, uses hooks for local state, `useNavigate` for transitions
 
-**UI Primitives (shadcn/ui):**
-- Purpose: Consistent, accessible UI building blocks
+**Phase-Based Animation State Machines:**
+- Purpose: Drive multi-step animated transitions within a single screen
+- Examples: `src/app/screens/SearchScreen.tsx` (flying -> gathering -> timeline), `src/app/screens/SynthesisScreen.tsx` (gathering -> collapsing -> flash -> document), `src/app/screens/ClusteringScreen.tsx` (words appear -> clusters form)
+- Pattern: `useState` with string union type, `useEffect` with `setTimeout` chains to advance phases
+
+**shadcn/ui Components:**
+- Purpose: Consistent, accessible UI primitives
 - Examples: `src/app/components/ui/button.tsx`, `src/app/components/ui/card.tsx`, `src/app/components/ui/input.tsx`
-- Pattern: `cva` for variant styling, `cn()` utility for class merging, Radix UI for behavior
+- Pattern: Radix UI primitive wrapped with Tailwind styles, exported as named components. Uses `cn()` utility from `src/app/components/ui/utils.ts` for class merging.
 
-**Design System Tokens:**
-- Purpose: Centralized color palette and typography
-- Examples: `src/styles/theme.css` (CSS custom properties), `src/styles/fonts.css` (Google Fonts)
-- Pattern: CSS variables on `:root`, mapped to Tailwind theme via `@theme inline`
+**Figma Asset Imports:**
+- Purpose: Reference images exported from Figma
+- Examples: `import cloudImage from 'figma:asset/3c7af6a14225d1ee2a77d186872f69245c52483a.png'` in `src/app/screens/VoiceDumpScreen.tsx` and `src/app/screens/ClusteringScreen.tsx`
+- Pattern: Custom `figma:asset/` import prefix resolved by Vite config
 
 ## Entry Points
 
-**Application Entry:**
-- Location: `src/main.tsx`
-- Triggers: Browser loads `index.html` which loads `/src/main.tsx` as ES module
-- Responsibilities: Create React root, render `<App />`, import global styles
+**Browser Entry:**
+- Location: `index.html` -> `src/main.tsx`
+- Triggers: Page load in browser
+- Responsibilities: Mounts React root, imports global styles from `src/styles/index.css`, renders `<App />`
 
-**Router Entry:**
+**App Root:**
+- Location: `src/app/App.tsx`
+- Triggers: React render
+- Responsibilities: Sets up `DndProvider` (drag-and-drop) and `RouterProvider` (routing)
+
+**Route Definitions:**
 - Location: `src/app/routes.tsx`
-- Triggers: `RouterProvider` in `App.tsx`
-- Responsibilities: Define all 8 routes mapping paths to screen components
+- Triggers: URL navigation
+- Responsibilities: Maps 8 paths to screen components: `/`, `/voice`, `/text`, `/cluster`, `/dashboard`, `/search`, `/synthesis`, `/project`
 
 ## Error Handling
 
-**Strategy:** Minimal - prototype-level only
+**Strategy:** Minimal -- this is a prototype/demo app
 
 **Patterns:**
-- `ImageWithFallback` in `src/app/components/figma/ImageWithFallback.tsx` catches image load errors and shows a placeholder SVG
-- No error boundaries
-- No try/catch blocks in screen components
-- No error states for user-facing flows
+- `ImageWithFallback` component in `src/app/components/figma/ImageWithFallback.tsx` catches image load errors and shows a placeholder SVG
+- No try/catch blocks, no error boundaries, no API error handling (no APIs exist)
+- Disabled button states prevent empty submissions (e.g., TextDumpScreen disables Continue when text is empty)
 
 ## Cross-Cutting Concerns
 
-**Logging:** None - no logging framework or console.log usage in production code
-
-**Validation:** Minimal - `TextDumpScreen` disables continue button when text is empty; `WelcomeScreen` has no validation on name input
-
-**Authentication:** None - this is a static prototype
-
-**Animation:** Pervasive - every screen uses `motion` from `motion/react` for entrance animations, phase transitions, and interactive feedback. Animation is a first-class architectural concern, not an afterthought.
-
-**Drag and Drop:** `react-dnd` with `HTML5Backend` is provided at the app level via `DndProvider` in `src/app/App.tsx`, though no screens currently implement drag targets/sources.
+**Logging:** None -- no logging framework or console.log statements
+**Validation:** Minimal -- only basic empty-string checks on form inputs
+**Authentication:** None -- no auth system
+**Animation:** Pervasive -- every screen uses Framer Motion (`motion/react`) for entrance animations, phase transitions, and micro-interactions. Animation IS the core UX pattern.
+**Theming:** CSS custom properties defined in `src/styles/theme.css`, though many screens use inline `style` props with hardcoded hex values instead of CSS variables
 
 ---
 

@@ -5,46 +5,44 @@
 ## Test Framework
 
 **Runner:**
-- None configured. No test framework is installed or set up.
-- No `jest`, `vitest`, `@testing-library/react`, or any test runner in `package.json` dependencies.
-- No test configuration files (`jest.config.*`, `vitest.config.*`, `playwright.config.*`) exist.
+- Not configured. No test framework is installed or set up.
+- No `jest`, `vitest`, `@testing-library/react`, or any other testing dependency in `package.json`
+
+**Assertion Library:**
+- None
 
 **Run Commands:**
 ```bash
-# No test commands defined in package.json scripts
-# Only "build" and "dev" scripts exist
+# No test scripts defined in package.json
+# Only available scripts:
+npm run build   # vite build
+npm run dev     # vite
 ```
 
 ## Test File Organization
 
 **Location:**
-- No test files exist anywhere in the codebase.
-- No `__tests__/` directories, `*.test.*` files, or `*.spec.*` files detected.
+- No test files exist anywhere in the codebase
 
-## Current State
+**Naming:**
+- No convention established
 
-This is a Figma Make-generated prototype project with zero test coverage. The codebase consists of:
-- 8 screen components in `src/app/screens/`
-- ~48 UI components in `src/app/components/ui/` (shadcn/ui)
-- 1 helper component in `src/app/components/figma/`
-- No business logic, API calls, or data layer to test
+**Structure:**
+- Not applicable
 
-## Recommended Setup
+## Test Structure
 
-If testing is to be added, follow this approach based on the existing stack (Vite + React + TypeScript):
+No tests exist. If tests were to be added, follow these recommendations based on the codebase:
 
-**Recommended Framework:**
-- Vitest (native Vite integration)
-- @testing-library/react for component testing
-- @testing-library/user-event for interaction testing
+**Recommended Framework:** Vitest (aligns with Vite build tool already in use)
 
-**Recommended Config:**
+**Recommended Setup:**
 ```bash
 # Install
-pnpm add -D vitest @testing-library/react @testing-library/jest-dom @testing-library/user-event jsdom
+pnpm add -D vitest @testing-library/react @testing-library/jest-dom jsdom
 ```
 
-**Recommended vitest.config.ts:**
+**Recommended Config (`vitest.config.ts`):**
 ```typescript
 import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
@@ -65,121 +63,102 @@ export default defineConfig({
 })
 ```
 
-**Recommended File Organization:**
-- Co-locate tests with source: `src/app/screens/DashboardScreen.test.tsx`
-- Name pattern: `{ComponentName}.test.tsx`
-- Shared test utilities: `src/test/setup.ts`, `src/test/utils.tsx`
-
-**Recommended package.json scripts:**
-```json
-{
-  "scripts": {
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
-  }
-}
+**Recommended Test Location:** Co-locate tests with source files:
+```
+src/app/screens/WelcomeScreen.tsx
+src/app/screens/WelcomeScreen.test.tsx
+src/app/components/AnimatedGradient.tsx
+src/app/components/AnimatedGradient.test.tsx
 ```
 
-## What to Test First
+## Mocking
 
-**Priority 1 - Screen navigation flow:**
-- `src/app/routes.tsx`: Verify all routes render correct screen components
-- `src/app/screens/WelcomeScreen.tsx`: Button clicks navigate to correct routes
+**Framework:** Not applicable (no tests exist)
 
-**Priority 2 - Interactive components:**
-- `src/app/screens/ClusteringScreen.tsx`: Cluster connection logic (`handleClusterClick`)
-- `src/app/screens/DashboardScreen.tsx`: Search handler navigation
-- `src/app/screens/VoiceDumpScreen.tsx`: Timer countdown and transcript state
-
-**Priority 3 - UI utilities:**
-- `src/app/components/ui/utils.ts`: `cn()` function (simple but foundational)
-- `src/app/components/figma/ImageWithFallback.tsx`: Error fallback behavior
-
-## Test Patterns to Follow
-
-**Component render test:**
-```typescript
-import { render, screen } from '@testing-library/react'
-import { MemoryRouter } from 'react-router'
-import { DashboardScreen } from './DashboardScreen'
-
-describe('DashboardScreen', () => {
-  it('renders greeting heading', () => {
-    render(
-      <MemoryRouter>
-        <DashboardScreen />
-      </MemoryRouter>
-    )
-    expect(screen.getByText(/good morning/i)).toBeInTheDocument()
-  })
-})
-```
-
-**Navigation test:**
-```typescript
-import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import { MemoryRouter } from 'react-router'
-import { WelcomeScreen } from './WelcomeScreen'
-
-const mockNavigate = vi.fn()
-vi.mock('react-router', async () => {
-  const actual = await vi.importActual('react-router')
-  return { ...actual, useNavigate: () => mockNavigate }
-})
-
-describe('WelcomeScreen', () => {
-  it('navigates to /voice on Voice button click', async () => {
-    render(
-      <MemoryRouter>
-        <WelcomeScreen />
-      </MemoryRouter>
-    )
-    await userEvent.click(screen.getByText('Voice'))
-    expect(mockNavigate).toHaveBeenCalledWith('/voice')
-  })
-})
-```
-
-**Utility test:**
-```typescript
-import { cn } from './utils'
-
-describe('cn', () => {
-  it('merges tailwind classes', () => {
-    expect(cn('px-2 py-1', 'px-4')).toBe('px-4 py-1')
-  })
-
-  it('handles conditional classes', () => {
-    expect(cn('base', false && 'hidden', 'extra')).toBe('base extra')
-  })
-})
-```
-
-## Mocking Considerations
-
-**What to Mock:**
-- `react-router` `useNavigate` hook (return `vi.fn()`)
-- `window.innerWidth` / `window.innerHeight` for responsive tests
-- `window.matchMedia` for `useIsMobile` hook tests
-- Timer functions (`vi.useFakeTimers()`) for `VoiceDumpScreen` countdown
+**If adding tests, mock these:**
+- `react-router` navigation (`useNavigate`)
+- `motion/react` animations (or use `motion` test utilities)
+- `window.innerWidth` / `window.innerHeight` (used in `VoiceDumpScreen.tsx` and `ClusteringScreen.tsx`)
+- `setTimeout` calls used for simulated async in `DashboardScreen.tsx`, `SynthesisScreen.tsx`
+- `figma:asset/*` imports (custom Vite asset resolution)
 
 **What NOT to Mock:**
-- shadcn/ui components -- render them as-is
-- The `cn()` utility
-- CSS/styling (use snapshot or visual tests if needed)
-- Framer Motion animations (they degrade gracefully in test env)
+- React state and hooks (test real behavior)
+- shadcn/ui components (test through their rendered output)
+- Tailwind/CSS classes (not relevant to behavior tests)
+
+## Fixtures and Factories
+
+**Test Data:**
+- Not applicable. However, significant hardcoded mock data exists in components that could be extracted:
+  - `src/app/screens/VoiceDumpScreen.tsx`: `transcriptLines` array
+  - `src/app/screens/ClusteringScreen.tsx`: `allWords` array, `initialClusterData` array
+  - `src/app/screens/SearchScreen.tsx`: `stickyNotes` array
+  - `src/app/screens/DashboardScreen.tsx`: mock AI responses in `setTimeout` callbacks
+
+**Location:**
+- No fixtures directory exists
 
 ## Coverage
 
-**Requirements:** None enforced. No coverage thresholds configured.
+**Requirements:** None enforced
 
-## E2E Tests
+**View Coverage:**
+```bash
+# Not configured
+```
 
-**Framework:** Not used. No Playwright, Cypress, or similar detected.
+## Test Types
 
-If E2E is needed, Playwright is recommended given the Vite setup and multi-screen navigation flow.
+**Unit Tests:**
+- None exist. Priority candidates:
+  - `src/app/components/ui/utils.ts` (`cn` function)
+  - `src/app/components/figma/ImageWithFallback.tsx` (error fallback logic)
+  - `src/app/components/ui/use-mobile.ts` (responsive hook)
+
+**Integration Tests:**
+- None exist. Priority candidates:
+  - Screen navigation flow (Welcome -> Voice/Text -> Cluster -> Dashboard)
+  - DashboardScreen widget interaction (input -> processing -> response)
+
+**E2E Tests:**
+- Not configured. No Playwright, Cypress, or similar tool installed.
+
+## Common Patterns
+
+**Async Testing (recommended pattern for this codebase):**
+```typescript
+// Many components use setTimeout for simulated async behavior
+// Use vi.useFakeTimers() or waitFor() to test these:
+import { vi } from 'vitest'
+import { render, act } from '@testing-library/react'
+
+it('shows transcript lines over time', () => {
+  vi.useFakeTimers()
+  render(<VoiceDumpScreen />)
+  act(() => { vi.advanceTimersByTime(3000) })
+  // assert first transcript line visible
+  vi.useRealTimers()
+})
+```
+
+**Navigation Testing (recommended pattern):**
+```typescript
+import { MemoryRouter } from 'react-router'
+
+it('navigates to /voice on voice button click', () => {
+  const navigate = vi.fn()
+  vi.mock('react-router', () => ({
+    ...vi.importActual('react-router'),
+    useNavigate: () => navigate,
+  }))
+  // render and click, assert navigate('/voice') called
+})
+```
+
+## Summary
+
+This is a Figma Make-generated prototype with zero test infrastructure. All behavior is UI-driven with hardcoded mock data and `setTimeout`-simulated async operations. If testing is to be added, Vitest with React Testing Library is the natural fit given the Vite build system already in place.
 
 ---
 
