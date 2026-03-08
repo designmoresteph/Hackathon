@@ -27,11 +27,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. User can set a custom recording duration and the recording auto-stops when the timer expires
   3. After recording, the transcript and entry metadata persist in localStorage — refreshing the browser does not lose the entry
   4. Completed recording transitions the user to the clustering screen with their real transcript
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
+- [ ] 01-01-PLAN.md — Types, localStorage storage layer, and OpenAI Realtime voice capture hook
+- [ ] 01-02-PLAN.md — Wire voice capture into VoiceDumpScreen UI with configurable timer, persistence, and ClusteringScreen integration
 
 ### Phase 2: Agent Pipeline
 **Goal**: Raw transcripts are processed through five sequential AI agents, each feeding the next, with real-time pipeline progress visible to the user
