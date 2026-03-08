@@ -1,10 +1,11 @@
-import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router";
+import { useState, useEffect, useRef, useMemo } from "react";
+import { useNavigate, useSearchParams } from "react-router";
 import { motion } from "motion/react";
 import { Button } from "../components/ui/button";
 import { Link2 } from "lucide-react";
 import { DndProvider, useDrag } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { getEntry } from "../lib/storage";
 import cloudImage from 'figma:asset/3c7af6a14225d1ee2a77d186872f69245c52483a.png';
 
 interface Cluster {
@@ -22,6 +23,94 @@ interface Connection {
 }
 
 const ITEM_TYPE = "CLUSTER";
+
+const CLUSTER_COLORS = ["#C8D5B0", "#F0D5D0", "#F5E642", "#F5C4A1"];
+
+const STOP_WORDS = new Set([
+  "a", "an", "the", "is", "are", "was", "were", "be", "been", "being",
+  "i", "me", "my", "we", "our", "you", "your", "he", "she", "it", "they",
+  "to", "of", "in", "for", "on", "with", "at", "by", "from", "as",
+  "and", "or", "but", "not", "so", "if", "do", "does", "did",
+  "have", "has", "had", "will", "would", "could", "should",
+  "that", "this", "these", "those", "what", "which", "who",
+  "just", "really", "very", "also", "about", "like", "know",
+  "think", "get", "got", "go", "going", "been", "can", "than",
+  "more", "some", "all", "its", "im", "ive", "dont", "thats",
+]);
+
+function extractWords(fullText: string): string[] {
+  const words = fullText
+    .toLowerCase()
+    .replace(/[^\w\s'-]/g, "")
+    .split(/\s+/)
+    .filter((w) => w.length > 2 && !STOP_WORDS.has(w));
+
+  // Deduplicate while preserving order
+  const seen = new Set<string>();
+  const unique: string[] = [];
+  for (const word of words) {
+    if (!seen.has(word)) {
+      seen.add(word);
+      unique.push(word);
+    }
+  }
+  return unique;
+}
+
+function buildClustersFromWords(words: string[]): Cluster[] {
+  if (words.length === 0) return [];
+
+  const clusterCount = Math.min(Math.max(Math.ceil(words.length / 4), 2), 5);
+  const clusters: Cluster[] = [];
+  const perCluster = Math.ceil(words.length / clusterCount);
+
+  const positions = [
+    { x: 15, y: 25 },
+    { x: 55, y: 20 },
+    { x: 30, y: 55 },
+    { x: 65, y: 60 },
+    { x: 10, y: 65 },
+  ];
+
+  for (let i = 0; i < clusterCount; i++) {
+    const start = i * perCluster;
+    const clusterWords = words.slice(start, start + perCluster);
+    if (clusterWords.length === 0) break;
+
+    clusters.push({
+      id: String(i + 1),
+      label: `Group ${i + 1}`,
+      color: CLUSTER_COLORS[i % CLUSTER_COLORS.length],
+      words: clusterWords,
+      x: positions[i % positions.length].x,
+      y: positions[i % positions.length].y,
+    });
+  }
+
+  return clusters;
+}
+
+// Fallback mock data
+const MOCK_WORDS = [
+  "blog", "writing", "creative", "publish", "deadlines", "stress",
+  "project", "team", "morning", "routine", "walk", "coffee",
+  "blocked", "frustrated", "stuck", "side hustle", "startup", "idea", "weekend",
+];
+
+const MOCK_CLUSTERS: Cluster[] = [
+  { id: "1", label: "Blog", color: "#C8D5B0", words: ["blog", "writing", "creative", "publish"], x: 15, y: 25 },
+  { id: "2", label: "Day job stress", color: "#F0D5D0", words: ["deadlines", "stress", "project", "team"], x: 55, y: 20 },
+  { id: "3", label: "Morning routine", color: "#F5E642", words: ["morning", "routine", "walk", "coffee"], x: 30, y: 55 },
+  { id: "4", label: "Creative block", color: "#F5C4A1", words: ["blocked", "frustrated", "stuck"], x: 65, y: 60 },
+  { id: "5", label: "Side hustle", color: "#C8D5B0", words: ["side hustle", "startup", "idea", "weekend"], x: 10, y: 65 },
+];
+
+const MOCK_CONNECTIONS: Connection[] = [
+  { from: "1", to: "4" },
+  { from: "3", to: "1" },
+  { from: "5", to: "1" },
+  { from: "2", to: "4" },
+];
 
 // Cloud component for floating words
 function WordCloud({ word, delay }: { word: string; delay: number }) {
@@ -46,9 +135,9 @@ function WordCloud({ word, delay }: { word: string; delay: number }) {
     >
       <div className="relative inline-block">
         {/* Cloud image */}
-        <img 
-          src={cloudImage} 
-          alt="" 
+        <img
+          src={cloudImage}
+          alt=""
           className="w-32 h-20 object-contain opacity-90"
           style={{ filter: 'brightness(1.1) contrast(0.9)' }}
         />
@@ -64,21 +153,23 @@ function WordCloud({ word, delay }: { word: string; delay: number }) {
 }
 
 // Large draggable cloud component for clusters
-function ClusterCloud({ 
-  cluster, 
-  onClick, 
+function ClusterCloud({
+  cluster,
+  onClick,
   isSelected,
   onDragEnd,
-}: { 
-  cluster: Cluster; 
+}: {
+  cluster: Cluster;
   onClick: () => void;
   isSelected: boolean;
   onDragEnd: (id: string, x: number, y: number) => void;
 }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+
   const [{ isDragging }, drag] = useDrag(() => ({
     type: ITEM_TYPE,
     item: { id: cluster.id, x: cluster.x, y: cluster.y },
-    end: (item, monitor) => {
+    end: (_item, monitor) => {
       const offset = monitor.getSourceClientOffset();
       if (offset && containerRef.current) {
         const containerRect = containerRef.current.getBoundingClientRect();
@@ -92,14 +183,12 @@ function ClusterCloud({
     }),
   }), [cluster.id, cluster.x, cluster.y]);
 
-  const containerRef = useRef<HTMLDivElement>(null);
-
   return (
     <motion.div
-      ref={drag}
+      ref={drag as unknown as React.Ref<HTMLDivElement>}
       initial={{ scale: 0, opacity: 0 }}
-      animate={{ 
-        scale: 1, 
+      animate={{
+        scale: 1,
         opacity: isDragging ? 0.5 : 1,
       }}
       transition={{ duration: 0.6, type: "spring" }}
@@ -114,21 +203,21 @@ function ClusterCloud({
     >
       <div className="relative" ref={containerRef}>
         {/* Large cloud image with color tint */}
-        <div 
+        <div
           className="relative w-80 h-52"
           style={{
             filter: isSelected ? 'brightness(1.1) drop-shadow(0 4px 12px rgba(0,0,0,0.15))' : 'brightness(1.05)',
           }}
         >
-          <img 
-            src={cloudImage} 
-            alt="" 
+          <img
+            src={cloudImage}
+            alt=""
             className="w-full h-full object-contain"
           />
           {/* Color overlay */}
-          <div 
+          <div
             className="absolute inset-0 mix-blend-multiply opacity-40"
-            style={{ 
+            style={{
               backgroundColor: cluster.color,
               WebkitMaskImage: `url(${cloudImage})`,
               WebkitMaskSize: 'contain',
@@ -141,7 +230,7 @@ function ClusterCloud({
             }}
           />
           {isSelected && (
-            <div 
+            <div
               className="absolute inset-0"
               style={{
                 border: '3px dashed #0D0D0D',
@@ -151,7 +240,7 @@ function ClusterCloud({
             />
           )}
         </div>
-        
+
         {/* Cluster content */}
         <div className="absolute inset-0 flex flex-col items-center justify-center p-8 pt-12 pointer-events-none">
           <h3 className="font-['Lora'] text-xl mb-4 text-center" style={{ color: '#0D0D0D' }}>
@@ -180,6 +269,36 @@ function ClusterCloud({
 
 function ClusteringScreenContent() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const entryId = searchParams.get("entryId");
+
+  // Load entry from localStorage if available
+  const entryData = useMemo(() => {
+    if (!entryId) return null;
+    return getEntry(entryId);
+  }, [entryId]);
+
+  // Extract words and build clusters from real data or fall back to mock
+  const { allWords, initialClusterData, initialConnections } = useMemo(() => {
+    if (entryData) {
+      const words = extractWords(entryData.fullText);
+      // If fewer than 5 meaningful words, use segment texts directly
+      const finalWords = words.length >= 5
+        ? words
+        : entryData.transcript.map((s) => s.text);
+
+      const clusters = buildClustersFromWords(finalWords);
+      // No auto-connections for real data (AI clustering comes in Phase 2)
+      return { allWords: finalWords, initialClusterData: clusters, initialConnections: [] as Connection[] };
+    }
+
+    return {
+      allWords: MOCK_WORDS,
+      initialClusterData: MOCK_CLUSTERS,
+      initialConnections: MOCK_CONNECTIONS,
+    };
+  }, [entryData]);
+
   const [words, setWords] = useState<string[]>([]);
   const [clusters, setClusters] = useState<Cluster[]>([]);
   const [showClusters, setShowClusters] = useState(false);
@@ -187,71 +306,6 @@ function ClusteringScreenContent() {
   const [connectMode, setConnectMode] = useState(false);
   const [selectedCluster, setSelectedCluster] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  const allWords = [
-    "blog",
-    "writing",
-    "creative",
-    "publish",
-    "deadlines",
-    "stress",
-    "project",
-    "team",
-    "morning",
-    "routine",
-    "walk",
-    "coffee",
-    "blocked",
-    "frustrated",
-    "stuck",
-    "side hustle",
-    "startup",
-    "idea",
-    "weekend",
-  ];
-
-  const initialClusterData: Cluster[] = [
-    {
-      id: "1",
-      label: "Blog",
-      color: "#C8D5B0", // sage
-      words: ["blog", "writing", "creative", "publish"],
-      x: 15,
-      y: 25,
-    },
-    {
-      id: "2",
-      label: "Day job stress",
-      color: "#F0D5D0", // blush
-      words: ["deadlines", "stress", "project", "team"],
-      x: 55,
-      y: 20,
-    },
-    {
-      id: "3",
-      label: "Morning routine",
-      color: "#F5E642", // yellow
-      words: ["morning", "routine", "walk", "coffee"],
-      x: 30,
-      y: 55,
-    },
-    {
-      id: "4",
-      label: "Creative block",
-      color: "#F5C4A1", // peach
-      words: ["blocked", "frustrated", "stuck"],
-      x: 65,
-      y: 60,
-    },
-    {
-      id: "5",
-      label: "Side hustle",
-      color: "#C8D5B0", // sage
-      words: ["side hustle", "startup", "idea", "weekend"],
-      x: 10,
-      y: 65,
-    },
-  ];
 
   // Animate words appearing
   useEffect(() => {
@@ -265,15 +319,9 @@ function ClusteringScreenContent() {
     setTimeout(() => {
       setShowClusters(true);
       setClusters(initialClusterData);
-      // Add some initial connections
-      setConnections([
-        { from: "1", to: "4" }, // Blog to Creative block
-        { from: "3", to: "1" }, // Morning routine to Blog
-        { from: "5", to: "1" }, // Side hustle to Blog
-        { from: "2", to: "4" }, // Day job stress to Creative block
-      ]);
+      setConnections(initialConnections);
     }, allWords.length * 200 + 1000);
-  }, []);
+  }, [allWords, initialClusterData, initialConnections]);
 
   const handleDragEnd = (id: string, x: number, y: number) => {
     setClusters((prev) =>
@@ -290,9 +338,7 @@ function ClusteringScreenContent() {
       setSelectedCluster(clusterId);
     } else {
       if (selectedCluster !== clusterId) {
-        // Create connection
         const newConnection = { from: selectedCluster, to: clusterId };
-        // Check if connection already exists
         const exists = connections.some(
           (c) =>
             (c.from === selectedCluster && c.to === clusterId) ||
