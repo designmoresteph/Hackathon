@@ -44,4 +44,4 @@ pnpm dev
 |-------|-------------|--------|
 | 1. Voice Input & Persistence | Real speech-to-text with localStorage | Complete |
 | 2. Agent Pipeline | Five sequential AI agents with progress UI | Complete |
-| 3. Dashboard Integration | Wire real agent outputs into dashboard | Up Next |
+| 3. Dashboard Integration | Wire real agent outputs into dashboard | In Progress |
