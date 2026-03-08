@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import { Mic, Type, ImageIcon } from "lucide-react";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
+import { AnimatedGradient } from "../components/AnimatedGradient";
 
 export function WelcomeScreen() {
   const navigate = useNavigate();
@@ -25,7 +26,10 @@ export function WelcomeScreen() {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden" style={{ backgroundColor: '#F7F5F0' }}>
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Animated gradient background */}
+      <AnimatedGradient />
+      
       <div className="relative flex flex-col items-center justify-center min-h-screen px-6 py-20">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
