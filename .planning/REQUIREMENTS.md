@@ -19,13 +19,13 @@
 - [ ] **AGENT-03**: ResearchAgent takes creative sparks + themes and queries Exa API for curated references and inspiration cards
 - [ ] **AGENT-04**: ActionAgent takes priorities + tasks and generates next steps, time blocks, and reminders
 - [ ] **AGENT-05**: CalendarAgent takes time blocks + commitments and proposes Google Calendar events (mocked)
-- [ ] **AGENT-06**: Agents run sequentially as a pipeline — each agent's output feeds as input to the next
+- [x] **AGENT-06**: Agents run sequentially as a pipeline — each agent's output feeds as input to the next
 - [ ] **AGENT-07**: Agent pipeline screen shows all 5 agents with animated status bullets (scanning, processing, done)
 
 ### Persistence
 
 - [x] **PERS-01**: Entries and agent outputs persist in localStorage across sessions
-- [ ] **PERS-02**: LinkerAgent can access past entries to detect patterns over time
+- [x] **PERS-02**: LinkerAgent can access past entries to detect patterns over time
 - [ ] **PERS-03**: Dashboard displays historical data from stored entries
 
 ### Dashboard
@@ -73,10 +73,10 @@
 | AGENT-03 | Phase 2 | Pending |
 | AGENT-04 | Phase 2 | Pending |
 | AGENT-05 | Phase 2 | Pending |
-| AGENT-06 | Phase 2 | Pending |
+| AGENT-06 | Phase 2 | Complete |
 | AGENT-07 | Phase 2 | Pending |
 | PERS-01 | Phase 1 | Complete |
-| PERS-02 | Phase 2 | Pending |
+| PERS-02 | Phase 2 | Complete |
 | PERS-03 | Phase 3 | Pending |
 | DASH-01 | Phase 3 | Pending |
 | DASH-02 | Phase 3 | Pending |
