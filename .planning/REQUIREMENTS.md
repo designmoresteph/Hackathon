@@ -8,9 +8,9 @@
 ### Voice Input
 
 - [x] **VOICE-01**: User can record voice input with real-time speech-to-text via OpenAI Realtime API
-- [ ] **VOICE-02**: Transcribed words appear as floating cloud bubbles in real-time during recording
-- [ ] **VOICE-03**: User can configure recording duration (not hardcoded to 10 minutes)
-- [ ] **VOICE-04**: Recording stops automatically when timer expires, transitions to clustering
+- [x] **VOICE-02**: Transcribed words appear as floating cloud bubbles in real-time during recording
+- [x] **VOICE-03**: User can configure recording duration (not hardcoded to 10 minutes)
+- [x] **VOICE-04**: Recording stops automatically when timer expires, transitions to clustering
 
 ### Agent Pipeline
 
@@ -65,9 +65,9 @@
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | VOICE-01 | Phase 1 | Complete |
-| VOICE-02 | Phase 1 | Pending |
-| VOICE-03 | Phase 1 | Pending |
-| VOICE-04 | Phase 1 | Pending |
+| VOICE-02 | Phase 1 | Complete |
+| VOICE-03 | Phase 1 | Complete |
+| VOICE-04 | Phase 1 | Complete |
 | AGENT-01 | Phase 2 | Pending |
 | AGENT-02 | Phase 2 | Pending |
 | AGENT-03 | Phase 2 | Pending |
