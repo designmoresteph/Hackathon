@@ -3,6 +3,9 @@ import { useNavigate } from "react-router";
 import { motion } from "motion/react";
 import { Button } from "../components/ui/button";
 import { Link2 } from "lucide-react";
+import { DndProvider, useDrag } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import cloudImage from 'figma:asset/3c7af6a14225d1ee2a77d186872f69245c52483a.png';
 
 interface Cluster {
   id: string;
@@ -18,7 +21,164 @@ interface Connection {
   to: string;
 }
 
-export function ClusteringScreen() {
+const ITEM_TYPE = "CLUSTER";
+
+// Cloud component for floating words
+function WordCloud({ word, delay }: { word: string; delay: number }) {
+  return (
+    <motion.div
+      initial={{
+        opacity: 0,
+        y: window.innerHeight,
+        x: Math.random() * window.innerWidth,
+      }}
+      animate={{
+        opacity: 1,
+        y: Math.random() * 500 + 50,
+        x: Math.random() * (window.innerWidth - 200) + 100,
+      }}
+      transition={{
+        duration: 1.5,
+        ease: "easeOut",
+        delay,
+      }}
+      className="absolute"
+    >
+      <div className="relative inline-block">
+        {/* Cloud image */}
+        <img 
+          src={cloudImage} 
+          alt="" 
+          className="w-32 h-20 object-contain opacity-90"
+          style={{ filter: 'brightness(1.1) contrast(0.9)' }}
+        />
+        {/* Word centered on cloud */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="text-sm font-['DM_Sans'] font-light" style={{ color: '#0D0D0D' }}>
+            {word}
+          </span>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+// Large draggable cloud component for clusters
+function ClusterCloud({ 
+  cluster, 
+  onClick, 
+  isSelected,
+  onDragEnd,
+}: { 
+  cluster: Cluster; 
+  onClick: () => void;
+  isSelected: boolean;
+  onDragEnd: (id: string, x: number, y: number) => void;
+}) {
+  const [{ isDragging }, drag] = useDrag(() => ({
+    type: ITEM_TYPE,
+    item: { id: cluster.id, x: cluster.x, y: cluster.y },
+    end: (item, monitor) => {
+      const offset = monitor.getSourceClientOffset();
+      if (offset && containerRef.current) {
+        const containerRect = containerRef.current.getBoundingClientRect();
+        const newX = ((offset.x - containerRect.left) / containerRect.width) * 100;
+        const newY = ((offset.y - containerRect.top) / containerRect.height) * 100;
+        onDragEnd(cluster.id, newX, newY);
+      }
+    },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  }), [cluster.id, cluster.x, cluster.y]);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  return (
+    <motion.div
+      ref={drag}
+      initial={{ scale: 0, opacity: 0 }}
+      animate={{ 
+        scale: 1, 
+        opacity: isDragging ? 0.5 : 1,
+      }}
+      transition={{ duration: 0.6, type: "spring" }}
+      className={`absolute cursor-move transition-all hover:-translate-y-1 ${
+        isSelected ? "scale-105" : ""
+      }`}
+      style={{
+        left: `${cluster.x}%`,
+        top: `${cluster.y}%`,
+      }}
+      onClick={onClick}
+    >
+      <div className="relative" ref={containerRef}>
+        {/* Large cloud image with color tint */}
+        <div 
+          className="relative w-80 h-52"
+          style={{
+            filter: isSelected ? 'brightness(1.1) drop-shadow(0 4px 12px rgba(0,0,0,0.15))' : 'brightness(1.05)',
+          }}
+        >
+          <img 
+            src={cloudImage} 
+            alt="" 
+            className="w-full h-full object-contain"
+          />
+          {/* Color overlay */}
+          <div 
+            className="absolute inset-0 mix-blend-multiply opacity-40"
+            style={{ 
+              backgroundColor: cluster.color,
+              WebkitMaskImage: `url(${cloudImage})`,
+              WebkitMaskSize: 'contain',
+              WebkitMaskRepeat: 'no-repeat',
+              WebkitMaskPosition: 'center',
+              maskImage: `url(${cloudImage})`,
+              maskSize: 'contain',
+              maskRepeat: 'no-repeat',
+              maskPosition: 'center',
+            }}
+          />
+          {isSelected && (
+            <div 
+              className="absolute inset-0"
+              style={{
+                border: '3px dashed #0D0D0D',
+                borderRadius: '50%',
+                opacity: 0.6,
+              }}
+            />
+          )}
+        </div>
+        
+        {/* Cluster content */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center p-8 pt-12 pointer-events-none">
+          <h3 className="font-['Lora'] text-xl mb-4 text-center" style={{ color: '#0D0D0D' }}>
+            {cluster.label}
+          </h3>
+          <div className="flex flex-wrap gap-2 justify-center max-w-[200px]">
+            {cluster.words.map((word, i) => (
+              <span
+                key={i}
+                className="text-xs px-3 py-1 rounded-full font-['DM_Sans'] font-light"
+                style={{
+                  backgroundColor: 'rgba(255, 255, 255, 0.7)',
+                  color: '#0D0D0D',
+                  border: '1px solid rgba(232, 229, 224, 0.5)',
+                }}
+              >
+                {word}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+function ClusteringScreenContent() {
   const navigate = useNavigate();
   const [words, setWords] = useState<string[]>([]);
   const [clusters, setClusters] = useState<Cluster[]>([]);
@@ -50,46 +210,46 @@ export function ClusteringScreen() {
     "weekend",
   ];
 
-  const clusterData: Cluster[] = [
+  const initialClusterData: Cluster[] = [
     {
       id: "1",
       label: "Blog",
       color: "#C8D5B0", // sage
       words: ["blog", "writing", "creative", "publish"],
-      x: 20,
-      y: 30,
+      x: 15,
+      y: 25,
     },
     {
       id: "2",
       label: "Day job stress",
       color: "#F0D5D0", // blush
       words: ["deadlines", "stress", "project", "team"],
-      x: 60,
-      y: 25,
+      x: 55,
+      y: 20,
     },
     {
       id: "3",
       label: "Morning routine",
       color: "#F5E642", // yellow
       words: ["morning", "routine", "walk", "coffee"],
-      x: 35,
-      y: 60,
+      x: 30,
+      y: 55,
     },
     {
       id: "4",
       label: "Creative block",
       color: "#F5C4A1", // peach
       words: ["blocked", "frustrated", "stuck"],
-      x: 70,
-      y: 65,
+      x: 65,
+      y: 60,
     },
     {
       id: "5",
       label: "Side hustle",
       color: "#C8D5B0", // sage
       words: ["side hustle", "startup", "idea", "weekend"],
-      x: 15,
-      y: 70,
+      x: 10,
+      y: 65,
     },
   ];
 
@@ -104,7 +264,7 @@ export function ClusteringScreen() {
     // Show clusters after words
     setTimeout(() => {
       setShowClusters(true);
-      setClusters(clusterData);
+      setClusters(initialClusterData);
       // Add some initial connections
       setConnections([
         { from: "1", to: "4" }, // Blog to Creative block
@@ -114,6 +274,14 @@ export function ClusteringScreen() {
       ]);
     }, allWords.length * 200 + 1000);
   }, []);
+
+  const handleDragEnd = (id: string, x: number, y: number) => {
+    setClusters((prev) =>
+      prev.map((cluster) =>
+        cluster.id === id ? { ...cluster, x, y } : cluster
+      )
+    );
+  };
 
   const handleClusterClick = (clusterId: string) => {
     if (!connectMode) return;
@@ -142,8 +310,8 @@ export function ClusteringScreen() {
     if (!containerRef.current) return { x: 0, y: 0 };
     const containerRect = containerRef.current.getBoundingClientRect();
     return {
-      x: (cluster.x / 100) * containerRect.width + 100,
-      y: (cluster.y / 100) * containerRect.height + 60,
+      x: (cluster.x / 100) * containerRect.width + 140,
+      y: (cluster.y / 100) * containerRect.height + 90,
     };
   };
 
@@ -232,81 +400,22 @@ export function ClusteringScreen() {
             </svg>
           )}
 
+          {/* Floating word clouds */}
           {!showClusters &&
             words.map((word, i) => (
-              <motion.div
-                key={i}
-                initial={{
-                  opacity: 0,
-                  y: window.innerHeight,
-                  x: Math.random() * window.innerWidth,
-                }}
-                animate={{
-                  opacity: 1,
-                  y: Math.random() * 500 + 50,
-                  x: Math.random() * (window.innerWidth - 200) + 100,
-                }}
-                transition={{
-                  duration: 1.5,
-                  ease: "easeOut",
-                }}
-                className="absolute px-4 py-2 rounded-full text-sm font-['DM_Sans'] font-light"
-                style={{
-                  backgroundColor: '#FFFFFF',
-                  border: '1px solid #E8E5E0',
-                  color: '#0D0D0D',
-                }}
-              >
-                {word}
-              </motion.div>
+              <WordCloud key={i} word={word} delay={i * 0.2} />
             ))}
 
-          {/* Clusters */}
+          {/* Cluster clouds */}
           {showClusters &&
             clusters.map((cluster) => (
-              <motion.div
+              <ClusterCloud
                 key={cluster.id}
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.6, type: "spring" }}
-                className={`absolute cursor-pointer transition-all hover:-translate-y-1 ${
-                  selectedCluster === cluster.id
-                    ? "ring-2 ring-offset-4 scale-105"
-                    : ""
-                }`}
-                style={{
-                  left: `${cluster.x}%`,
-                  top: `${cluster.y}%`,
-                  ringColor: '#0D0D0D',
-                }}
+                cluster={cluster}
                 onClick={() => handleClusterClick(cluster.id)}
-              >
-                <div
-                  className="rounded-2xl p-6 min-w-[200px]"
-                  style={{
-                    backgroundColor: cluster.color,
-                    border: '1px solid #E8E5E0',
-                  }}
-                >
-                  <h3 className="font-['Lora'] text-lg mb-3" style={{ color: '#0D0D0D' }}>
-                    {cluster.label}
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {cluster.words.map((word, i) => (
-                      <span
-                        key={i}
-                        className="text-xs px-2 py-1 rounded-full font-['DM_Sans'] font-light"
-                        style={{
-                          backgroundColor: 'rgba(255, 255, 255, 0.5)',
-                          color: '#0D0D0D',
-                        }}
-                      >
-                        {word}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
+                isSelected={selectedCluster === cluster.id}
+                onDragEnd={handleDragEnd}
+              />
             ))}
         </div>
 
@@ -317,11 +426,15 @@ export function ClusteringScreen() {
             transition={{ delay: 1 }}
             className="flex justify-center mt-12 gap-4"
           >
-            {connectMode && (
+            {connectMode ? (
               <p className="text-sm self-center font-['DM_Sans']" style={{ color: '#6B6B6B' }}>
                 {selectedCluster
                   ? "Click another cluster to connect"
                   : "Click a cluster to start connecting"}
+              </p>
+            ) : (
+              <p className="text-sm self-center font-['DM_Sans']" style={{ color: '#6B6B6B' }}>
+                Drag clouds to organize your thoughts
               </p>
             )}
             <Button
@@ -340,5 +453,13 @@ export function ClusteringScreen() {
         )}
       </div>
     </div>
+  );
+}
+
+export function ClusteringScreen() {
+  return (
+    <DndProvider backend={HTML5Backend}>
+      <ClusteringScreenContent />
+    </DndProvider>
   );
 }
