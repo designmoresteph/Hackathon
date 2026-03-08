@@ -484,7 +484,7 @@ function ClusteringScreenContent() {
               </p>
             )}
             <Button
-              onClick={() => navigate("/dashboard")}
+              onClick={() => navigate(`/pipeline?entryId=${entryId || ''}`)}
               size="lg"
               className="rounded-full font-['Outfit'] font-semibold text-xs tracking-[0.08em] uppercase h-12 px-7 transition-all hover:-translate-y-0.5"
               style={{
@@ -493,7 +493,7 @@ function ClusteringScreenContent() {
                 border: 'none',
               }}
             >
-              Create My Dashboard
+              Analyze My Thoughts
             </Button>
           </motion.div>
         )}

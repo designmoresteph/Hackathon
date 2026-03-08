@@ -7,6 +7,7 @@ import { DashboardScreen } from "./screens/DashboardScreen";
 import { SearchScreen } from "./screens/SearchScreen";
 import { SynthesisScreen } from "./screens/SynthesisScreen";
 import { ProjectScreen } from "./screens/ProjectScreen";
+import { PipelineScreen } from "./screens/PipelineScreen";
 
 export const router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ export const router = createBrowserRouter([
   {
     path: "/cluster",
     Component: ClusteringScreen,
+  },
+  {
+    path: "/pipeline",
+    Component: PipelineScreen,
   },
   {
     path: "/dashboard",
