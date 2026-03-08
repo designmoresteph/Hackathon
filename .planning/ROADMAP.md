@@ -13,7 +13,7 @@ Wire real AI processing behind the existing Figma Make UI prototype. Phase 1 est
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Voice Input and Persistence** - Real speech-to-text capture with localStorage so entries survive across sessions (completed 2026-03-08)
-- [ ] **Phase 2: Agent Pipeline** - Five sequential AI agents processing transcripts into structured outputs with pipeline UI
+- [x] **Phase 2: Agent Pipeline** - Five sequential AI agents processing transcripts into structured outputs with pipeline UI (completed 2026-03-08)
 - [ ] **Phase 3: Dashboard Integration** - Wire real agent outputs and historical data into the dashboard
 
 ## Phase Details
@@ -43,7 +43,7 @@ Plans:
   3. Each downstream agent receives the previous agent's output — LinkerAgent finds connections to past entries, ResearchAgent returns Exa-sourced references, ActionAgent generates concrete next steps, CalendarAgent proposes time-blocked events
   4. Pipeline results are stored so they can be displayed after completion
   5. LinkerAgent can access previously stored entries to detect recurring patterns across sessions
-**Plans:** 3/4 plans executed
+**Plans:** 4/4 plans complete
 
 Plans:
 - [ ] 02-01-PLAN.md — Agent output types, pipeline storage, and sequential pipeline orchestrator
@@ -72,5 +72,5 @@ Phases execute in numeric order: 1 → 2 → 3
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Voice Input and Persistence | 2/2 | Complete   | 2026-03-08 |
-| 2. Agent Pipeline | 3/4 | In Progress|  |
+| 2. Agent Pipeline | 4/4 | Complete   | 2026-03-08 |
 | 3. Dashboard Integration | 0/1 | Not started | - |

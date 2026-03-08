@@ -20,7 +20,7 @@
 - [x] **AGENT-04**: ActionAgent takes priorities + tasks and generates next steps, time blocks, and reminders
 - [x] **AGENT-05**: CalendarAgent takes time blocks + commitments and proposes Google Calendar events (mocked)
 - [x] **AGENT-06**: Agents run sequentially as a pipeline — each agent's output feeds as input to the next
-- [ ] **AGENT-07**: Agent pipeline screen shows all 5 agents with animated status bullets (scanning, processing, done)
+- [x] **AGENT-07**: Agent pipeline screen shows all 5 agents with animated status bullets (scanning, processing, done)
 
 ### Persistence
 
@@ -74,7 +74,7 @@
 | AGENT-04 | Phase 2 | Complete |
 | AGENT-05 | Phase 2 | Complete |
 | AGENT-06 | Phase 2 | Complete |
-| AGENT-07 | Phase 2 | Pending |
+| AGENT-07 | Phase 2 | Complete |
 | PERS-01 | Phase 1 | Complete |
 | PERS-02 | Phase 2 | Complete |
 | PERS-03 | Phase 3 | Pending |
