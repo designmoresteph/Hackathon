@@ -14,9 +14,9 @@
 
 ### Agent Pipeline
 
-- [ ] **AGENT-01**: SynthesisAgent processes raw transcript + past entries into priorities, tasks, themes, blockers, and sparks
-- [ ] **AGENT-02**: LinkerAgent takes past notes + current entry and produces semantic connections and recurring patterns
-- [ ] **AGENT-03**: ResearchAgent takes creative sparks + themes and queries Exa API for curated references and inspiration cards
+- [x] **AGENT-01**: SynthesisAgent processes raw transcript + past entries into priorities, tasks, themes, blockers, and sparks
+- [x] **AGENT-02**: LinkerAgent takes past notes + current entry and produces semantic connections and recurring patterns
+- [x] **AGENT-03**: ResearchAgent takes creative sparks + themes and queries Exa API for curated references and inspiration cards
 - [ ] **AGENT-04**: ActionAgent takes priorities + tasks and generates next steps, time blocks, and reminders
 - [ ] **AGENT-05**: CalendarAgent takes time blocks + commitments and proposes Google Calendar events (mocked)
 - [x] **AGENT-06**: Agents run sequentially as a pipeline — each agent's output feeds as input to the next
@@ -68,9 +68,9 @@
 | VOICE-02 | Phase 1 | Complete |
 | VOICE-03 | Phase 1 | Complete |
 | VOICE-04 | Phase 1 | Complete |
-| AGENT-01 | Phase 2 | Pending |
-| AGENT-02 | Phase 2 | Pending |
-| AGENT-03 | Phase 2 | Pending |
+| AGENT-01 | Phase 2 | Complete |
+| AGENT-02 | Phase 2 | Complete |
+| AGENT-03 | Phase 2 | Complete |
 | AGENT-04 | Phase 2 | Pending |
 | AGENT-05 | Phase 2 | Pending |
 | AGENT-06 | Phase 2 | Complete |
