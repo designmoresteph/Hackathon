@@ -30,8 +30,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans:** 2/2 plans complete
 
 Plans:
-- [ ] 01-01-PLAN.md — Types, localStorage storage layer, and OpenAI Realtime voice capture hook
-- [ ] 01-02-PLAN.md — Wire voice capture into VoiceDumpScreen UI with configurable timer, persistence, and ClusteringScreen integration
+- [x] 01-01-PLAN.md — Types, localStorage storage layer, and OpenAI Realtime voice capture hook
+- [x] 01-02-PLAN.md — Wire voice capture into VoiceDumpScreen UI with configurable timer, persistence, and ClusteringScreen integration
 
 ### Phase 2: Agent Pipeline
 **Goal**: Raw transcripts are processed through five sequential AI agents, each feeding the next, with real-time pipeline progress visible to the user
@@ -43,12 +43,13 @@ Plans:
   3. Each downstream agent receives the previous agent's output — LinkerAgent finds connections to past entries, ResearchAgent returns Exa-sourced references, ActionAgent generates concrete next steps, CalendarAgent proposes time-blocked events
   4. Pipeline results are stored so they can be displayed after completion
   5. LinkerAgent can access previously stored entries to detect recurring patterns across sessions
-**Plans**: TBD
+**Plans:** 4 plans
 
 Plans:
-- [ ] 02-01: TBD
-- [ ] 02-02: TBD
-- [ ] 02-03: TBD
+- [ ] 02-01-PLAN.md — Agent output types, pipeline storage, and sequential pipeline orchestrator
+- [ ] 02-02-PLAN.md — SynthesisAgent, LinkerAgent, and ResearchAgent implementations
+- [ ] 02-03-PLAN.md — ActionAgent and CalendarAgent implementations
+- [ ] 02-04-PLAN.md — Pipeline progress UI screen with animated agent status indicators
 
 ### Phase 3: Dashboard Integration
 **Goal**: The dashboard reflects real data — agent outputs from the latest run and historical entries across sessions
@@ -71,5 +72,5 @@ Phases execute in numeric order: 1 → 2 → 3
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Voice Input and Persistence | 2/2 | Complete   | 2026-03-08 |
-| 2. Agent Pipeline | 0/3 | Not started | - |
+| 2. Agent Pipeline | 0/4 | Not started | - |
 | 3. Dashboard Integration | 0/1 | Not started | - |
