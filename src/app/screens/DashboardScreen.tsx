@@ -5,8 +5,9 @@ import { Calendar, Mic, FileText, Coffee, Sparkles, TrendingUp, Lightbulb, Searc
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
-import { getLatestPipelineResult } from '../lib/pipelineStorage';
-import type { PipelineResult } from '../lib/types';
+import { getLatestPipelineResult, getAllPipelineResults } from '../lib/pipelineStorage';
+import { getAllEntries } from '../lib/storage';
+import type { Entry, PipelineResult } from '../lib/types';
 
 const priorityColors: Record<string, { bg: string; text: string }> = {
   high: { bg: '#F5C4A1', text: '#7A3A1A' },
@@ -18,9 +19,13 @@ export function DashboardScreen() {
   const navigate = useNavigate();
 
   const [latestResult, setLatestResult] = useState<PipelineResult | null>(null);
+  const [entries, setEntries] = useState<Entry[]>([]);
+  const [allResults, setAllResults] = useState<PipelineResult[]>([]);
 
   useEffect(() => {
     setLatestResult(getLatestPipelineResult());
+    setEntries(getAllEntries());
+    setAllResults(getAllPipelineResults());
   }, []);
 
   return (
@@ -220,7 +225,7 @@ export function DashboardScreen() {
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* TODAY Widget */}
+              {/* Recent Entries Widget */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -230,38 +235,32 @@ export function DashboardScreen() {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2 font-['Lora']" style={{ color: '#0D0D0D' }}>
                       <Coffee className="w-5 h-5" strokeWidth={1.5} />
-                      TODAY
+                      Recent Entries
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-2 font-['DM_Sans'] font-light" style={{ color: '#0D0D0D' }}>
-                    <p className="text-sm">Start blog draft</p>
-                    <p className="text-sm">Morning walk completed</p>
-                    <p className="text-sm">Review side hustle ideas</p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-
-              {/* Blog Widget */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.5 }}
-              >
-                <Card className="border rounded-2xl transition-all hover:-translate-y-1 cursor-pointer" onClick={() => navigate("/search")} style={{ backgroundColor: '#FFFFFF', borderColor: '#E8E5E0' }}>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 font-['Lora']" style={{ color: '#0D0D0D' }}>
-                      <FileText className="w-5 h-5" strokeWidth={1.5} style={{ color: '#C8D5B0' }} />
-                      Blog
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-2">
-                    <p className="text-sm font-['DM_Sans'] font-light" style={{ color: '#6B6B6B' }}>12 notes collected</p>
-                    <p className="text-xs font-['DM_Sans'] font-light" style={{ color: '#A8A49E' }}>
-                      Last mention: 2 minutes ago
-                    </p>
-                    <Button variant="outline" size="sm" className="w-full mt-2 rounded-full border-[1.5px] font-['Outfit'] font-semibold text-xs tracking-[0.08em] uppercase" style={{ borderColor: '#0D0D0D', color: '#0D0D0D' }}>
-                      Explore
-                    </Button>
+                    {entries.length > 0 ? (
+                      entries.slice(0, 3).map((entry) => {
+                        const mins = Math.floor(entry.durationSeconds / 60);
+                        const secs = entry.durationSeconds % 60;
+                        const preview = entry.fullText.length > 60
+                          ? entry.fullText.slice(0, 60) + '...'
+                          : entry.fullText;
+                        return (
+                          <div key={entry.id} className="space-y-0.5">
+                            <div className="flex items-center gap-2 text-xs" style={{ color: '#6B6B6B' }}>
+                              <span>{new Date(entry.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+                              <span>{mins}m {secs}s</span>
+                            </div>
+                            <p className="text-sm">{preview}</p>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <p className="text-sm" style={{ color: '#6B6B6B' }}>
+                        No entries yet. Start by recording your thoughts.
+                      </p>
+                    )}
                   </CardContent>
                 </Card>
               </motion.div>
@@ -270,7 +269,7 @@ export function DashboardScreen() {
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.6 }}
+                transition={{ delay: 0.5 }}
               >
                 <Card className="border rounded-2xl transition-all hover:-translate-y-1" style={{ backgroundColor: '#FFFFFF', borderColor: '#E8E5E0' }}>
                   <CardHeader>
@@ -291,7 +290,40 @@ export function DashboardScreen() {
                 </Card>
               </motion.div>
 
-              {/* Calendar Widget */}
+              {/* Proposed Schedule Widget */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.6 }}
+              >
+                <Card className="border rounded-2xl transition-all hover:-translate-y-1" style={{ backgroundColor: '#FFFFFF', borderColor: '#E8E5E0' }}>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 font-['Lora']" style={{ color: '#0D0D0D' }}>
+                      <Calendar className="w-5 h-5" strokeWidth={1.5} style={{ color: '#C8D5B0' }} />
+                      Proposed Schedule
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3 font-['DM_Sans'] font-light">
+                    {latestResult?.calendar?.proposedEvents && latestResult.calendar.proposedEvents.length > 0 ? (
+                      latestResult.calendar.proposedEvents.slice(0, 3).map((event, i) => (
+                        <div key={i} className="text-sm">
+                          <p className="font-medium" style={{ color: '#0D0D0D' }}>
+                            {new Date(event.startTime).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
+                          </p>
+                          <p style={{ color: '#0D0D0D' }}>{event.title}</p>
+                          <p className="text-xs" style={{ color: '#6B6B6B' }}>{event.source}</p>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-sm" style={{ color: '#6B6B6B' }}>
+                        Run the pipeline to see AI-proposed schedule
+                      </p>
+                    )}
+                  </CardContent>
+                </Card>
+              </motion.div>
+
+              {/* Session History Widget */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -300,27 +332,26 @@ export function DashboardScreen() {
                 <Card className="border rounded-2xl transition-all hover:-translate-y-1" style={{ backgroundColor: '#FFFFFF', borderColor: '#E8E5E0' }}>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2 font-['Lora']" style={{ color: '#0D0D0D' }}>
-                      <Calendar className="w-5 h-5" strokeWidth={1.5} style={{ color: '#C8D5B0' }} />
-                      Today's Schedule
+                      <FileText className="w-5 h-5" strokeWidth={1.5} style={{ color: '#C8D5B0' }} />
+                      Session History
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-3 font-['DM_Sans'] font-light">
-                    <div className="text-sm">
-                      <p className="font-medium" style={{ color: '#0D0D0D' }}>9:00 AM</p>
-                      <p style={{ color: '#6B6B6B' }}>Team standup</p>
-                    </div>
-                    <div className="text-sm">
-                      <p className="font-medium" style={{ color: '#0D0D0D' }}>2:00 PM</p>
-                      <p style={{ color: '#6B6B6B' }}>Project review</p>
-                    </div>
-                    <div className="text-sm mt-3" style={{ color: '#C8D5B0' }}>
-                      <p>Free slot at 4:00 PM for writing</p>
-                    </div>
+                  <CardContent className="space-y-2 font-['DM_Sans'] font-light">
+                    <p className="text-sm" style={{ color: '#0D0D0D' }}>{entries.length} entries recorded</p>
+                    <p className="text-sm" style={{ color: '#0D0D0D' }}>{allResults.length} pipeline runs</p>
+                    {entries.length > 0 && (
+                      <p className="text-xs" style={{ color: '#6B6B6B' }}>
+                        Journaling since {new Date(entries[entries.length - 1].createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                      </p>
+                    )}
+                    <Button variant="outline" size="sm" className="w-full mt-2 rounded-full border-[1.5px] font-['Outfit'] font-semibold text-xs tracking-[0.08em] uppercase" style={{ borderColor: '#0D0D0D', color: '#0D0D0D' }}>
+                      Explore
+                    </Button>
                   </CardContent>
                 </Card>
               </motion.div>
 
-              {/* Creative Block Widget */}
+              {/* Research Widget */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -328,20 +359,29 @@ export function DashboardScreen() {
               >
                 <Card className="border rounded-2xl transition-all hover:-translate-y-1" style={{ backgroundColor: '#FFFFFF', borderColor: '#E8E5E0' }}>
                   <CardHeader>
-                    <CardTitle className="font-['Lora']" style={{ color: '#0D0D0D' }}>Creative Block</CardTitle>
+                    <CardTitle className="flex items-center gap-2 font-['Lora']" style={{ color: '#0D0D0D' }}>
+                      <Search className="w-5 h-5" strokeWidth={1.5} />
+                      Research
+                    </CardTitle>
                   </CardHeader>
-                  <CardContent className="font-['DM_Sans'] font-light">
-                    <p className="text-sm mb-3" style={{ color: '#0D0D0D' }}>
-                      You've mentioned feeling stuck 3 times this week
-                    </p>
-                    <Button size="sm" className="rounded-full font-['Outfit'] font-semibold text-xs tracking-[0.08em] uppercase" style={{ backgroundColor: '#0D0D0D', color: '#F7F5F0', border: 'none' }}>
-                      See Patterns
-                    </Button>
+                  <CardContent className="space-y-2 font-['DM_Sans'] font-light">
+                    {latestResult?.research?.references && latestResult.research.references.length > 0 ? (
+                      latestResult.research.references.slice(0, 3).map((ref, i) => (
+                        <div key={i} className="space-y-0.5">
+                          <p className="text-sm font-medium" style={{ color: '#0D0D0D' }}>{ref.title}</p>
+                          <p className="text-xs" style={{ color: '#6B6B6B' }}>{ref.relevantTo}</p>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-sm" style={{ color: '#6B6B6B' }}>
+                        Research references will appear after running the pipeline
+                      </p>
+                    )}
                   </CardContent>
                 </Card>
               </motion.div>
 
-              {/* Side Hustle Widget */}
+              {/* Creative Sparks Widget */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -349,15 +389,26 @@ export function DashboardScreen() {
               >
                 <Card className="border rounded-2xl transition-all hover:-translate-y-1" style={{ backgroundColor: '#FFFFFF', borderColor: '#E8E5E0' }}>
                   <CardHeader>
-                    <CardTitle className="font-['Lora']" style={{ color: '#0D0D0D' }}>Side Hustle Ideas</CardTitle>
+                    <CardTitle className="flex items-center gap-2 font-['Lora']" style={{ color: '#0D0D0D' }}>
+                      <Sparkles className="w-5 h-5" strokeWidth={1.5} />
+                      Creative Sparks
+                    </CardTitle>
                   </CardHeader>
                   <CardContent className="font-['DM_Sans'] font-light">
-                    <p className="text-sm mb-3" style={{ color: '#6B6B6B' }}>
-                      8 ideas captured this month
-                    </p>
-                    <Button variant="outline" size="sm" className="w-full rounded-full border-[1.5px] font-['Outfit'] font-semibold text-xs tracking-[0.08em] uppercase" style={{ borderColor: '#0D0D0D', color: '#0D0D0D' }}>
-                      Review Ideas
-                    </Button>
+                    {latestResult?.synthesis?.sparks && latestResult.synthesis.sparks.length > 0 ? (
+                      <ul className="space-y-1">
+                        {latestResult.synthesis.sparks.map((spark, i) => (
+                          <li key={i} className="text-sm flex items-start gap-1.5" style={{ color: '#0D0D0D' }}>
+                            <span className="mt-1.5 w-1 h-1 rounded-full shrink-0" style={{ backgroundColor: '#0D0D0D' }} />
+                            {spark}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-sm" style={{ color: '#6B6B6B' }}>
+                        Creative sparks from your thoughts will appear here
+                      </p>
+                    )}
                   </CardContent>
                 </Card>
               </motion.div>
