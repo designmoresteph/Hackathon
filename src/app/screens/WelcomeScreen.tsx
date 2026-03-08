@@ -19,7 +19,8 @@ export function WelcomeScreen() {
 
   const handleStart = (mode: string) => {
     if (mode === "voice") {
-      navigate("/voice");
+      const params = name ? `?name=${encodeURIComponent(name)}` : "";
+      navigate(`/voice${params}`);
     } else if (mode === "type") {
       navigate("/text");
     }
