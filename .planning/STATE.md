@@ -10,24 +10,24 @@ See: .planning/PROJECT.md (updated 2026-03-07)
 ## Current Position
 
 Phase: 1 of 3 (Voice Input and Persistence)
-Plan: 0 of 2 in current phase
-Status: Ready to plan
-Last activity: 2026-03-07 — Roadmap created
+Plan: 1 of 2 in current phase
+Status: Executing
+Last activity: 2026-03-07 — Completed 01-01-PLAN.md
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██░░░░░░░░] 17%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
-- Average duration: -
-- Total execution time: 0 hours
+- Total plans completed: 1
+- Average duration: 2min
+- Total execution time: 0.03 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 01-voice-input-and-persistence | 1 | 2min | 2min |
 
 **Recent Trend:**
 - Last 5 plans: -
@@ -46,6 +46,9 @@ Recent decisions affecting current work:
 - OpenAI for all LLM calls, Exa for ResearchAgent search
 - localStorage for persistence, no backend
 - CalendarAgent mocked (no real Google OAuth)
+- Added TypeScript compiler and tsconfig.json (project lacked one)
+- Used ScriptProcessorNode for audio capture (simpler than AudioWorklet)
+- WebSocket subprotocol auth for OpenAI Realtime API (browser-compatible)
 
 ### Pending Todos
 
@@ -58,5 +61,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-07
-Stopped at: Roadmap created, ready to plan Phase 1
+Stopped at: Completed 01-01-PLAN.md
 Resume file: None

@@ -7,7 +7,7 @@
 
 ### Voice Input
 
-- [ ] **VOICE-01**: User can record voice input with real-time speech-to-text via OpenAI Realtime API
+- [x] **VOICE-01**: User can record voice input with real-time speech-to-text via OpenAI Realtime API
 - [ ] **VOICE-02**: Transcribed words appear as floating cloud bubbles in real-time during recording
 - [ ] **VOICE-03**: User can configure recording duration (not hardcoded to 10 minutes)
 - [ ] **VOICE-04**: Recording stops automatically when timer expires, transitions to clustering
@@ -24,7 +24,7 @@
 
 ### Persistence
 
-- [ ] **PERS-01**: Entries and agent outputs persist in localStorage across sessions
+- [x] **PERS-01**: Entries and agent outputs persist in localStorage across sessions
 - [ ] **PERS-02**: LinkerAgent can access past entries to detect patterns over time
 - [ ] **PERS-03**: Dashboard displays historical data from stored entries
 
@@ -64,7 +64,7 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| VOICE-01 | Phase 1 | Pending |
+| VOICE-01 | Phase 1 | Complete |
 | VOICE-02 | Phase 1 | Pending |
 | VOICE-03 | Phase 1 | Pending |
 | VOICE-04 | Phase 1 | Pending |
@@ -75,7 +75,7 @@
 | AGENT-05 | Phase 2 | Pending |
 | AGENT-06 | Phase 2 | Pending |
 | AGENT-07 | Phase 2 | Pending |
-| PERS-01 | Phase 1 | Pending |
+| PERS-01 | Phase 1 | Complete |
 | PERS-02 | Phase 2 | Pending |
 | PERS-03 | Phase 3 | Pending |
 | DASH-01 | Phase 3 | Pending |
