@@ -9,11 +9,6 @@ export async function runLinkerAgent(
     return { connections: [], recurringPatterns: [] };
   }
 
-  const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-  if (!apiKey) {
-    throw new Error('LinkerAgent: VITE_OPENAI_API_KEY is not set');
-  }
-
   // Build context from the 10 most recent past entries
   const recentEntries = pastEntries.slice(-10);
   const pastContext = recentEntries
@@ -24,10 +19,9 @@ export async function runLinkerAgent(
     ? `\nCurrent themes: ${synthesisOutput.themes.join(', ')}`
     : '';
 
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+  const response = await fetch('/api/openai', {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${apiKey}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({

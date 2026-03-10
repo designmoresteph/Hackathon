@@ -4,11 +4,6 @@ export async function runActionAgent(
   synthesisOutput: SynthesisOutput,
   researchOutput: ResearchOutput
 ): Promise<ActionOutput> {
-  const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-  if (!apiKey) {
-    throw new Error('Missing VITE_OPENAI_API_KEY environment variable');
-  }
-
   const userMessage = `Here is the synthesized context:
 
 **Priorities:**
@@ -25,11 +20,10 @@ ${researchOutput.references.map((r) => `- "${r.title}": ${r.snippet} (relevant t
 
 Generate concrete next steps based on this context.`;
 
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+  const response = await fetch('/api/openai', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
       model: 'gpt-4o-mini',

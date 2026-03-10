@@ -65,9 +65,20 @@ export function useVoiceCapture(
   const startRecording = useCallback(async () => {
     setError(null);
 
-    const apiKey = import.meta.env.VITE_OPENAI_API_KEY as string | undefined;
-    if (!apiKey) {
-      const msg = 'Missing VITE_OPENAI_API_KEY environment variable';
+    // Get ephemeral token from server
+    let clientSecret: string;
+    try {
+      const tokenRes = await fetch('/api/realtime-token', { method: 'POST' });
+      if (!tokenRes.ok) {
+        throw new Error(`Token endpoint returned ${tokenRes.status}`);
+      }
+      const tokenData = await tokenRes.json();
+      clientSecret = tokenData.client_secret?.value;
+      if (!clientSecret) {
+        throw new Error('No client_secret in token response');
+      }
+    } catch (err) {
+      const msg = `Failed to get realtime token: ${err instanceof Error ? err.message : 'unknown error'}`;
       setError(msg);
       optionsRef.current.onError?.(msg);
       return;
@@ -85,34 +96,18 @@ export function useVoiceCapture(
     }
     streamRef.current = stream;
 
-    // Open WebSocket to OpenAI Realtime API
+    // Open WebSocket to OpenAI Realtime API using ephemeral token
     const url =
       'wss://api.openai.com/v1/realtime?model=gpt-4o-mini-realtime-preview';
     const ws = new WebSocket(url, [
       'realtime',
-      'openai-insecure-api-key.' + apiKey,
+      'openai-insecure-api-key.' + clientSecret,
       'openai-beta.realtime-v1',
     ]);
     wsRef.current = ws;
 
     ws.onopen = () => {
       setIsConnected(true);
-
-      // Configure the session
-      ws.send(
-        JSON.stringify({
-          type: 'session.update',
-          session: {
-            input_audio_transcription: {
-              model: 'gpt-4o-mini-transcribe',
-            },
-            turn_detection: {
-              type: 'server_vad',
-            },
-            modalities: ['text', 'audio'],
-          },
-        })
-      );
 
       // Start audio capture and streaming
       startAudioStream(stream, ws);

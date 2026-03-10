@@ -13,12 +13,6 @@ interface ExaSearchResponse {
 export async function runResearchAgent(
   synthesisOutput: SynthesisOutput,
 ): Promise<ResearchOutput> {
-  const apiKey = import.meta.env.VITE_EXA_API_KEY;
-  if (!apiKey) {
-    console.warn('ResearchAgent: VITE_EXA_API_KEY is not set, skipping research');
-    return { references: [] };
-  }
-
   // Build 2-3 search queries from sparks and themes
   const querySources: Array<{ query: string; source: string }> = [];
 
@@ -41,10 +35,9 @@ export async function runResearchAgent(
 
   for (const { query, source } of querySources) {
     try {
-      const response = await fetch('https://api.exa.ai/search', {
+      const response = await fetch('/api/exa', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${apiKey}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({

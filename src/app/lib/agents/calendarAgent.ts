@@ -3,11 +3,6 @@ import type { ActionOutput, CalendarOutput } from '../types';
 export async function runCalendarAgent(
   actionOutput: ActionOutput
 ): Promise<CalendarOutput> {
-  const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-  if (!apiKey) {
-    throw new Error('Missing VITE_OPENAI_API_KEY environment variable');
-  }
-
   const today = new Date().toISOString().split('T')[0];
 
   const userMessage = `Today's date: ${today}
@@ -22,11 +17,10 @@ ${actionOutput.nextSteps
 
 Propose time-blocked calendar events for the upcoming week based on these action items.`;
 
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+  const response = await fetch('/api/openai', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
       model: 'gpt-4o-mini',
